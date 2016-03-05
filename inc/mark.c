@@ -11,6 +11,7 @@ size_t*  stack_bottom;
 size_t*  stack_top;
 
 void find_stack_bottom(){
+    // the 28th number in /proc/self/stat is the bottom of the stack
     FILE* statfp = fopen("/proc/self/stat", "r");
     assert(statfp != NULL);
     fscanf(statfp, "%*d %*s %*c %*d %*d %*d %*d %*d %*u "
