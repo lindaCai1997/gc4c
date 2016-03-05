@@ -21,5 +21,8 @@ DataStructure* _metaData = NULL;
 
 void DataStructure_init(DataStructure*);
 void DataStructure_destroy(DataStructure*);
-void Node_insert(DataStructure*, void*);
+void Node_insert(DataStructure*, void*); //we need to add size as a parameter
 void Node_remove(DataStructure*, void*);
+
+/* add by Huck*/
+void dataStructure_findNode(DataStructure*, void*);
