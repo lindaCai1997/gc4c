@@ -4,8 +4,6 @@
 #include <assert.h>
 #include "dataStructure.h"
 
-
-extern end;
 size_t   heap_top;
 size_t  stack_bottom;
 size_t  stack_top;
@@ -35,16 +33,16 @@ void mark_on_stack(DataStructure *heapdata){
 }
 
 int mark(size_t sp, DataStructure* heapdata){
-
-    if (sp >= end && sp <= heap_top){
-        Node_insert(heapdata, (void*)(sp));
-        return 1;
+    int i = 0;
+    for (i = 0; i < heapdata -> NodeListSize; i++){
+        if ((void*)sp == heapdata -> NodeList[i] -> address)
+            heapdata -> NodeList[i] -> mark = 1;
+            return 1;
     }
     return 0;
 }
 int main(){
 
-    heap_top = (size_t)sbrk(0);
     DataStructure* heapdata = malloc(sizeof(DataStructure));
     DataStructure_init(heapdata);
 
