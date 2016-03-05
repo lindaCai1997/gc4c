@@ -4,6 +4,7 @@
  * implementation of the data structure
  */
 
+#include <stdlib.h>
 #include "dataStructure.h"
 
 void DataStructure_init(DataStructure* ds){
@@ -18,6 +19,11 @@ void DataStructure_destroy(DataStructure* ds){
 
 void Node_insert(DataStructure* ds, void* address){
     
+    if(_metaData == NULL){
+        _metaData = malloc(sizeof(DataStructure));
+        DataStructure_init(_metaData);
+    }
+
     if(ds->NodeListCount == ds->NodeListSize){
         size_t allocationSize = 2 * ds->NodeListSize;
         ds->NodeList = realloc(ds->NodeList, sizeof(Node*) * allocationSize);

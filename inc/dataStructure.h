@@ -17,6 +17,8 @@ typedef struct {
     size_t NodeListCount;
 } DataStructure;
 
+DataStructure* _metaData = NULL;
+
 void DataStructure_init(DataStructure*);
 void DataStructure_destroy(DataStructure*);
 void Node_insert(DataStructure*, void*);
