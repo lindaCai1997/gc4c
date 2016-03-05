@@ -28,7 +28,7 @@ void mark_on_stack(DataStructure *heapdata){
     size_t address_stack = stack_top;
     size_t address_heap = 0;
     for (; address_stack < stack_bottom; address_stack ++){
-        address_heap = *(size_t*)stack_top
+        address_heap = *(size_t*)stack_top;
         mark(address_heap, heapdata);
     }
 
