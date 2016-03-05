@@ -40,10 +40,17 @@ int mark(size_t* sp, DataStructure* heapdata){
     }
     return 0;
 }
+
 int main(){
     heap_top = (size_t)sbrk(0);
-    DataStructure* heapdata;
+    DataStructure* heapdata = malloc(sizeof(DataStructure));
     DataStructure_init(heapdata);
+    stack_bottom = malloc(sizeof(size_t));
     mark_on_stack(heapdata);
+    printf("%d", heapdata -> NodeListSize);
+    free(heapdata);
+    heapdata = NULL;
+    free(stack_bottom);
+    stack_bottom = NULL;
     return 0;
 }
