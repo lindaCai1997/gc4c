@@ -3,9 +3,6 @@
 
 void test1(){
 
-    DataStructure* ds = malloc(sizeof(DataStructure));
-
-    DataStructure_init(ds);
 
     int* x = malloc(sizeof(int));
     *x = 5;
@@ -13,7 +10,6 @@ void test1(){
 
     printf("%d\n", *(int*)(ds->NodeList[0]->address));
 
-    DataStructure_destroy(ds);
 
 }
 
