@@ -78,14 +78,13 @@ int main(){
     test_insert();
     fprintf(stderr, "\n");
 
+    fprintf(stderr, "Testing remove\n");
+    test_remove();
+    fprintf(stderr, "\n");
 
-    // fprintf(stderr, "Testing remove\n");
-    // test_remove();
-    // fprintf(stderr, "\n");
-
-    // fprintf(stderr, "Testing findNode\n");
-    // test_findNode();
-    // fprintf(stderr, "\n");
+    fprintf(stderr, "Testing findNode\n");
+    test_findNode();
+    fprintf(stderr, "\n");
     return 0;
 }
 
