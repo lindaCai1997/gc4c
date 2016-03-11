@@ -26,8 +26,7 @@ void* gc_realloc(void* ptr, size_t size){
         return NULL;
     if(size == 0)
     {
-        gc_free(ptr);
-        return NULL;
+        return gc_free(ptr);
     }
     Node* node = dataStructure_findNode(ds, ptr);
     size_t oldsize = node->size;

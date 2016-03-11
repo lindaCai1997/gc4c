@@ -1,6 +1,37 @@
 #include <stdio.h>
 #include "../inc/DataStructure.h"
 
+
+
+void test_insert(){
+
+}
+
+void test_remove(){
+
+}
+
+void* test_findNode(){
+
+}
+
+void test_findNode
+int main(){
+
+	DataStructure* metadata = (DataStructure*) malloc(sizeof(DataStructure));
+    test_insert();
+    test_remove();
+    test_findNode();
+    return 0;
+}
+
+
+
+
+
+
+
+/*
 void test1(){
 
 
@@ -18,3 +49,4 @@ int main(){
     test1();
 
 }
+*/

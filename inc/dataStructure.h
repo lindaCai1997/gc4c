@@ -8,6 +8,31 @@
 
 typedef struct {
     int mark;
+    size_t size;
+    void* address;
+    Node* next;
+} Node;
+
+typedef struct {
+    Node* head;
+    Node* tail;
+    size_t linkSize;
+} DataStructure;
+
+static DataStructure* _metaData = NULL;
+
+void DataStructure_init(DataStructure*);
+void DataStructure_destroy(DataStructure*);
+void Node_insert(DataStructure*, void*, size_t); //we need to add size as a parameter
+void Node_remove(DataStructure*, void*);
+void* DataStructure_findNode(DataStructure*, void*);
+
+
+
+
+/*
+typedef struct {
+    int mark;
     void* address;
 } Node;
 
@@ -17,12 +42,13 @@ typedef struct {
     size_t NodeListCount;
 } DataStructure;
 
-DataStructure* _metaData = NULL;
+static DataStructure* _metaData = NULL;
 
 void DataStructure_init(DataStructure*);
 void DataStructure_destroy(DataStructure*);
 void Node_insert(DataStructure*, void*); //we need to add size as a parameter
 void Node_remove(DataStructure*, void*);
 
-/* add by Huck*/
+
 void dataStructure_findNode(DataStructure*, void*);
+*/
