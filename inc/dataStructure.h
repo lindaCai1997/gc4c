@@ -4,13 +4,17 @@
  * dataStructure header files
  */
 
-#include <stdlib.h>
+#ifndef _DATASTRUCTURE_H_
+#define _DATASTRUCTURE_H_
 
-typedef struct {
+#include <stdlib.h>
+#include <stdio.h>
+
+typedef struct Node{
     int mark;
     size_t size;
     void* address;
-    Node* next;
+    struct Node* next;
 } Node;
 
 typedef struct {
@@ -21,14 +25,14 @@ typedef struct {
 
 static DataStructure* _metaData = NULL;
 
-void DataStructure_init(DataStructure*);
+DataStructure* DataStructure_init();
 void DataStructure_destroy(DataStructure*);
 void Node_insert(DataStructure*, void*, size_t); //we need to add size as a parameter
 void Node_remove(DataStructure*, void*);
 void* DataStructure_findNode(DataStructure*, void*);
+void DataStructure_display(DataStructure*);
 
-
-
+#endif
 
 /*
 typedef struct {

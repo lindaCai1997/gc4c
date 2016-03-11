@@ -4,15 +4,16 @@
  * implementation of the data structure
  */
 
-#include <stdlib.h>
 #include "dataStructure.h"
 
-void DataStructure_init(DataStructure* ds)
+
+DataStructure* DataStructure_init()
 {
-    ds = (DataStructure*) malloc(sizeof(DataStructure));
+    DataStructure* ds = (DataStructure*) malloc(sizeof(DataStructure));
     ds->head = NULL;
     ds->tail = NULL;
     ds->linkSize = 0;
+    return ds;
 }
 
 void DataStructure_destroy(DataStructure* ds)
@@ -24,6 +25,7 @@ void DataStructure_destroy(DataStructure* ds)
     while(current != NULL)
     {
         temp = current->next;
+        current->next = NULL;
         free(current);
         current = temp;
     }
@@ -38,7 +40,8 @@ void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated)
 {
     if(ds == NULL)
     {
-        DataStructure_init(ds);
+        fprintf(stderr, "DataStructure is not initialized\n");
+        return;
     }
 
     Node* newNode = (Node*) malloc(sizeof(Node));
@@ -71,7 +74,7 @@ void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated)
     else if(newNode->address > ds->tail->address)
     {
         newNode->next = NULL;
-        tail->next = newNode;
+        ds->tail->next = newNode;
         ds->tail = newNode;
         ds->linkSize++;
     }
@@ -104,7 +107,10 @@ void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated)
 void Node_remove(DataStructure* ds, void* address)
 {
     if(ds == NULL || ds->linkSize == 0)
-        return NULL;
+    {
+        fprintf(stderr, "The dataStructure is empty\n");
+        return;
+    }
     //Only one node in the structure
     if(ds->linkSize == 1)
     {
@@ -139,7 +145,7 @@ void Node_remove(DataStructure* ds, void* address)
     else
     {
         Node* current = ds->head;
-        Node* previous
+        Node* previous;
         while(current != NULL && current->address != address)
         {
             previous = current;
@@ -148,7 +154,7 @@ void Node_remove(DataStructure* ds, void* address)
         if(current == NULL)
         {
             fprintf(stderr, "No Node Matched To Be Removed. Line: %d\n", __LINE__);
-            return NULL;
+            return;
         }
         previous->next = current->next;
         free(current);
@@ -161,7 +167,10 @@ void Node_remove(DataStructure* ds, void* address)
 void* DataStructure_findNode(DataStructure* ds, void* address)
 {
     if(ds == NULL || ds->linkSize == 0)
+    {
+        fprintf(stderr, "The dataStructure is empty\n");
         return NULL;
+    }
     Node* current = ds->head;
     while(current != NULL && current->address != address)
     {
@@ -172,12 +181,30 @@ void* DataStructure_findNode(DataStructure* ds, void* address)
         fprintf(stderr, "No Match Found. Line: %d.\n", __LINE__);
         return NULL;
     }
-    return (void*)current
+    return (void*)current->address;
 }
 
-
-
-
+void DataStructure_display(DataStructure* ds)
+{
+    if(ds == NULL || ds->linkSize == 0)
+    {
+        fprintf(stderr, "The dataStructure is empty\n");
+        return;
+    }
+    Node* current = ds->head;
+    int count = 0;
+    fprintf(stderr, "Print Each Node:");
+    while(current != NULL)
+    {
+        if(count % 5 == 0)
+            fprintf(stderr, "\n");
+        fprintf(stderr, "%p ", current->address);
+        current = current->next;
+        count++;
+    }
+    fprintf(stderr, "\n");
+    fprintf(stderr, "End of Print. \n");
+}
 
 
 
