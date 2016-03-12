@@ -27,7 +27,7 @@ static DataStructure* _metaData = NULL;
 
 DataStructure* DataStructure_init();
 void DataStructure_destroy(DataStructure*);
-void Node_insert(DataStructure*, void*, size_t); //we need to add size as a parameter
+void Node_insert(DataStructure*, void*, size_t);
 void Node_remove(DataStructure*, void*);
 void* DataStructure_findNode(DataStructure*, void*);
 void DataStructure_display(DataStructure*);

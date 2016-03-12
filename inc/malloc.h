@@ -12,8 +12,8 @@
 #define calloc(nmemb, size) gc_calloc(nmemb, size)
 #define free(ptr) gc_free(ptr)
 
-#include <stddef.h>
 
+void gc_init();
 void* gc_malloc(size_t size);
 void* gc_realloc(void* ptr, size_t size);
 void* gc_free(void* ptr);
