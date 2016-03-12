@@ -16,7 +16,7 @@
 void gc_init();
 void* gc_malloc(size_t size);
 void* gc_realloc(void* ptr, size_t size);
-void* gc_free(void* ptr);
+void gc_free(void* ptr);
 void* gc_calloc(size_t nmemb, size_t size);
 
 #endif

@@ -41,7 +41,8 @@ void* gc_realloc(void* ptr, size_t size){
         return NULL;
     if(size == 0)
     {
-        return gc_free(ptr);
+        gc_free(ptr);
+        return ptr;
     }
     Node* node = DataStructure_findNode(_metaData, ptr);
     size_t oldsize = node->size;
@@ -58,12 +59,14 @@ void* gc_realloc(void* ptr, size_t size){
     return newptr;
 }
 
-void* gc_free(void* ptr){
-    return NULL;
+void gc_free(void* ptr){
+    Node* node = (Node*)DataStructure_findNode(_metaData, ptr);
+    node->mark = 1;
+    return;
 }
 
 void* gc_calloc(size_t nmemb, size_t size){
-    void* ptr = calloc(num, size);
+    void* ptr = calloc(nmemb, size);
     if(ptr != NULL)
         Node_insert(_metaData, ptr, size);
     return ptr;
