@@ -19,30 +19,57 @@ void find_stack_bottom(){
     fclose(statfp);
 }
 
-
 void mark_on_stack(DataStructure *heapdata){
-    find_stack_bottom();
+ //   find_stack_bottom();
     size_t i;
     stack_top = (size_t)(&i);
-    printf("%zu", stack_top);
+    heap_top = heapdata -> head -> address;
+    heap_bottom = heapdata -> tail -> address;
+ //   printf("%zu", stack_top);   
     size_t address_stack = stack_top;
     size_t address_heap = 0;
     for (; address_stack < stack_bottom; address_stack ++){
-        address_heap = *(size_t*)stack_top;
-        mark(address_heap, heapdata);
-    }
+        address_heap = *(size_t*)address_stack;
+        if (address_heap >= heap_top && address_heap <= heap_bottom)
+             mark(address_heap, heapdata);
+    }   
 
+}
+
+void mark_on_heap(DataStructure *heapdata){
+    Node* current = heapdata -> head;
+    Node* tail = heapdata -> tail;
+    heap_top = head -> address;
+    heap_bottom = tail -> address;
+    do {
+    void* heap_address = current -> address;
+    size_t potential_address = 0;
+        while (heap_address < current -> address + current -> size){
+            potential_address = *(size_t*)heap_address;
+            if (potential_address >= heap_top && potential_address <= heap_bottom)
+                mark(potential_address, heapdata):
+            heap_address++;
+        }   
+    } while(current != tail)
 }
 
 int mark(size_t sp, DataStructure* heapdata){
     int i = 0;
-    for (i = 0; i < heapdata -> NodeListSize; i++){
-        if ((void*)sp == heapdata -> NodeList[i] -> address)
-            heapdata -> NodeList[i] -> mark = 1;
+    Node* current = heapdata -> head;
+    Node* tail = heapdata -> tail;
+    if (current == NULL)
+         return 0;
+
+    do{
+    if ((void*)sp ==  current -> address){
+            current -> mark = 1;
             return 1;
     }
+    current = current -> next;
+    }while(current != tail);
     return 0;
 }
+
 int main(){
 
     DataStructure* heapdata = malloc(sizeof(DataStructure));
