@@ -6,26 +6,55 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <stddef.h>
 #include "dataStructure.h" 
 #include "malloc.h"
-
+#include "mark.h"
+#include "sweep.h"
 
 #undef malloc
 #undef calloc
 #undef realloc
 #undef free
 
+
+void* clean_helper()
+{
+    while(_running)
+    {
+
+        find_stack_bottom();
+        mark_on_stack(_metaData);
+        //stop the all other threads except this one
+        sweep(_metaData);
+        //resume the all other threads
+        sleep(5);
+    }
+    find_stack_bottom();
+    mark_all_on_stack(_metaData);
+    sweep(_metaData);
+    DataStructure_destroy(_metaData);
+    return NULL;
+}
+
 void gc_init()
 {
     _metaData = DataStructure_init();
+    _running = 1;
+    pthread_create(&_metaData->pid, NULL, clean_helper, NULL);
     //user calls this at the beginning of the program
     //we need to create a gc_thread to clean data
 }
 
 void gc_destroy()
 {
-    DataStructure_destroy(_metaData);
+    _running = 0;
+    pthread_join(_metaData->pid, NULL);
+    // find_stack_bottom();
+    // mark_all_on_stack(_metaData);
+    // sweep(_metaData);
+    // DataStructure_destroy(_metaData);
     //user calls this at the end of program
     //we need to stop the gc_thread that we have created in the gc_init()
 }
