@@ -83,41 +83,6 @@ void mark_on_heap(DataStructure *heapdata){
     } while(current != tail);
 }
 
-#include <mark.h>
-
-size_t  heap_top;
-size_t  heap_bottom;
-size_t  stack_bottom;
-size_t  stack_top;
-
-void find_stack_bottom(){
-    // the 28th number in /proc/self/stat is the start of the stack
-    FILE* statfp = fopen("/proc/self/stat", "r");
-
-    assert(statfp != NULL);
-    fscanf(statfp, "%*d %*s %*c %*d %*d %*d %*d %*d %*u "
-           "%*lu %*lu %*lu %*lu %*lu %*lu %*ld %*ld "
-           "%*ld %*ld %*ld %*ld %*llu %*lu %*ld "
-           "%*lu %*lu %*lu %lu", &stack_bottom);
-    fclose(statfp);
-}
-
-int mark(size_t sp, DataStructure* heapdata){
-    Node* current = heapdata -> head;
-
-    if (current == NULL)
-         return 0;
-    do{
-        if (sp ==  (size_t)(current -> address)){
-            current -> mark = 1;
-            return 1;
-        }
-        current = current -> next;
-    } while(current != NULL);
-
-    return 0;
-}
-
 void sweep(DataStructure *heapdata){
     Node* current = heapdata -> head;
     Node* temp = current;
