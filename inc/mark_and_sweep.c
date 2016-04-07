@@ -80,7 +80,7 @@ void mark_on_heap(DataStructure *heapdata){
             }
         }
         current = current -> next;
-    } while(current != tail);
+    } while(current && tail && current != tail);
 }
 
 void mark_all_on_stack(DataStructure *heapdata){
