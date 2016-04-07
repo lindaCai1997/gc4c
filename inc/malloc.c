@@ -53,6 +53,7 @@ void gc_destroy()
 }
 
 void* gc_malloc(size_t size){
+    printf("calling gc_malloc\n");
     void* userData = malloc(size);
     Node_insert(_metaData, userData, size);
     return userData;
