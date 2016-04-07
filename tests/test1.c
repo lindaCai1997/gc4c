@@ -6,6 +6,8 @@ int main(){
 
     printf("test1\n");
 
+    gc_init();
     int*x = malloc(sizeof(int));
+    gc_destroy();
 
 }

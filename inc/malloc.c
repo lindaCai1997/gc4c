@@ -32,6 +32,7 @@ void gc_destroy()
     mark_all_on_stack(_metaData);
     mark_on_heap(_metaData);
     sweep(_metaData);
+    DataStructure_destroy(_metaData);
 }
 void* gc_malloc(size_t size)
 {
