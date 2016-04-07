@@ -7,6 +7,8 @@
 #ifndef _MALLOC_H_
 #define _MALLOC_H_
 
+#include <stddef.h>
+
 #define malloc(size) gc_malloc(size)
 #define realloc(ptr, size) gc_malloc(ptr, size)
 #define calloc(nmemb, size) gc_calloc(nmemb, size)
