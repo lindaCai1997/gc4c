@@ -26,6 +26,7 @@ void DataStructure_destroy(DataStructure* ds)
     {
         temp = current->next;
         current->next = NULL;
+        free(current->address);
         free(current);
         current = temp;
     }
