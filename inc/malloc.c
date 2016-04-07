@@ -14,7 +14,6 @@
 
 void* clean_helper()
 {
-    
     mark_on_stack(_metaData);
     mark_on_heap(_metaData);
     sweep(_metaData);
@@ -30,7 +29,7 @@ void gc_init()
 void gc_destroy()
 {
     mark_all_on_stack(_metaData);
-    mark_on_heap(_metaData);
+//    mark_on_heap(_metaData);
     sweep(_metaData);
     DataStructure_destroy(_metaData);
 }
@@ -71,7 +70,7 @@ void* gc_realloc(void* ptr, size_t size){
 
 void gc_free(void* ptr){
     Node* node = (Node*)DataStructure_findNode(_metaData, ptr);
-    node->mark = 1;
+    node->mark = 0;
     return;
 }
 
