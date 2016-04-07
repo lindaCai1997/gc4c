@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <pthread.h>
+
 
 typedef struct Node{
     int mark;
@@ -22,7 +22,6 @@ typedef struct {
     Node* head;
     Node* tail;
     size_t linkSize;
-    pthread_t pid;
 } DataStructure;
 
 static DataStructure* _metaData = NULL;
