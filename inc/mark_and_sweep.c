@@ -83,6 +83,14 @@ void mark_on_heap(DataStructure *heapdata){
     } while(current != tail);
 }
 
+void mark_all_on_stack(DataStructure *heapdata){
+    Node* curr = heapdata -> head;
+    while (curr != NULL){
+        curr -> mark = 0;
+        curr = curr -> next;
+    }
+}
+
 void sweep(DataStructure *heapdata){
     Node* current = heapdata -> head;
     Node* temp = current;
@@ -97,6 +105,7 @@ void sweep(DataStructure *heapdata){
         }
     }
 }
+
 
 
              
