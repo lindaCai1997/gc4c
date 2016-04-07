@@ -4,14 +4,7 @@
  * malloc.h implementation
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stddef.h>
-#include "dataStructure.h" 
 #include "malloc.h"
-#include "mark_and_sweep.h"
-#include "sweep.h"
 
 #undef malloc
 #undef calloc
