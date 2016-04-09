@@ -1,4 +1,3 @@
-#include "../inc/malloc.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,15 +42,14 @@ void testLargeData(){
     size_t size = 1024 * 1024 * 1024, count = 5;
 
     void* x = malloc(count * size);
+
     printf("Test Large Data Passed !!! \n");
 }
 
 int main(){
-    printf("Test 1 with GC4C\n");
-    gc_init();
+    printf("Test 1 without GC4C\n");
     testSimple();
     testValidData();
     testLargeData();
-    gc_destroy();
     return 0;
 }
