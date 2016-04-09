@@ -20,34 +20,23 @@
 pthread_t pid = 0;
 void* clean_helper()
 {
-//    while(_running)
-//    {
-
-//        find_stack_bottom();
         mark_on_stack(_metaData);
         mark_on_heap(_metaData);
-        //stop the all other threads except this one
         sweep(_metaData);
-        //resume the all other threads
-//        sleep(5);
-//    }
     return NULL;
 }
  
 void gc_init()
 {   
     _metaData = DataStructure_init();
-//    _running = 1;
-//    pthread_create(&pid, NULL, clean_helper, NULL);
+
     //user calls this at the beginning of the program
     //we need to create a gc_thread to clean data
 }
 
 void gc_destroy()
 {    
-     _running = 0;
-//     pthread_join(pid, NULL);
-//     find_stack_bottom();
+    
      mark_all_on_stack(_metaData);
      sweep(_metaData);
      DataStructure_destroy(_metaData);
