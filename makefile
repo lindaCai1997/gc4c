@@ -1,22 +1,38 @@
-CC = gcc
+CC = clang
 CCFLAGS = -std=c99 -c -MMD -MP -D_GNU_SOURCE -Wall
 DEBUGFLAGS = -g
+ASANFLAGS = -fsanitize=address -fno-omit-frame-pointer
 
-all: dataStructure-test.o
+all: test1 test2
+debug: test-debug test2-debug
+asan: test1-asan test2-asan
 
-debug: dataStructure-test-debug.o
+test1: malloc dataStructure mark_and_sweep tests/test1.c
+	$(CC) malloc.o dataStructure.o mark_and_sweep.o tests/test1.c -o test1.exe
 
-dataStructure-test.o: malloc.o dataStructure.o tests/dataStructure_test.c
-	$(CC) malloc.o dataStructure.o tests/dataStructure_test.c -o dataStructure_test
+test1-debug: malloc dataStructure mark_and_sweep tests/test1.c
+	$(CC) $(DEBUGFLAGS) malloc.o dataStructure.o mark_and_sweep.o tests/test1.c -o test1-debug.exe
 
-dataStructure-test-debug.o: dataStructure.o tests/dataStructure_test.c
-	$(CC) dataStructure.o tests/dataStructure_test.c -o dataStructure_test-debug
+test1-asan: malloc dataStructure mark_and_sweep tests/test1.c
+	$(CC) $(ASANFLAGS) malloc.o dataStructure.o mark_and_sweep.o tests/test1.c -o test1-asan.exe
 
-malloc.o: dataStructure.o inc/malloc.h inc/malloc.c
-	$(CC) $(CCFLAGS) dataStructure.o inc/malloc.h inc/malloc.c 
+test2: malloc dataStructure mark_and_sweep tests/test2.c
+	$(CC) malloc.o dataStructure.o mark_and_sweep.o tests/test2.c -o test2.exe
 
-dataStructure.o: inc/dataStructure.h inc/dataStructure.c
-	$(CC) $(CCFLAGS) inc/dataStructure.h inc/dataStructure.c
+test2-debug: malloc dataStructure mark_and_sweep tests/test2.c
+	$(CC) $(DEBUGFLAGS) malloc.o dataStructure.o mark_and_sweep.o tests/test2.c -o test2-debug.exe
+
+test2-asan: malloc dataStructure mark_and_sweep tests/test2.c
+	$(CC) $(ASANFLAGS) malloc.o dataStructure.o mark_and_sweep.o tests/test2.c -o test2-asan.exe
+
+malloc: dataStructure inc/malloc.h inc/malloc.c
+	$(CC) $(CCFLAGS) dataStructure.o inc/malloc.h inc/malloc.c -c
+
+dataStructure: inc/dataStructure.h inc/dataStructure.c
+	$(CC) $(CCFLAGS) inc/dataStructure.h inc/dataStructure.c -c
+
+mark_and_sweep: inc/mark_and_sweep.h inc/mark_and_sweep.c 
+	$(CC) $(CCFLAGS) inc/mark_and_sweep.h inc/mark_and_sweep.c -c 
 
 clean:
-	rm -rf *o dataStructure
+	rm -rf *o *.exe
