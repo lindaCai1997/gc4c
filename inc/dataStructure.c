@@ -84,7 +84,7 @@ void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated)
     else
     {
         Node* current = ds->head;
-        Node* previous;
+        Node* previous = NULL;
         while(current != NULL && (current->address < newNode->address))
         {
             previous = current;
