@@ -33,7 +33,34 @@ int mark(size_t sp, DataStructure* heapdata){
     return 0;
 }
 
+int mark_heap(size_t sp, DataStructure* heapdata){
+    Node* current = heapdata -> head;
+    heap_top = (size_t)(current -> address);
+    heap_bottom = (size_t)(heapdata -> tail -> address);
+
+    if (current == NULL)
+         return 0;
+    do{
+        if (sp ==  (size_t)(current -> address)){
+            current -> mark = 1; 
+            void* heap_address = current -> address;
+            size_t potential_address = 0;
+            while (heap_address < current -> address + current -> size){
+                potential_address = *(size_t*)heap_address;
+                if (potential_address >= heap_top && potential_address < heap_bottom)
+                    mark_heap(potential_address, heapdata);
+                heap_address += sizeof(size_t);
+            }
+            return 1;
+        }
+        current = current -> next;
+    } while(current != NULL);
+    
+    return 0;
+}
+
 void mark_on_stack(DataStructure *heapdata){
+    mark_all_on_stack(heapdata);
     find_stack_bottom();
     size_t i = 0;
     stack_top = (size_t)(&i);
@@ -75,7 +102,7 @@ void mark_on_heap(DataStructure *heapdata){
             while (heap_address < current -> address + current -> size){
                 potential_address = *(size_t*)heap_address;
                 if (potential_address >= heap_top && potential_address <= heap_bottom)
-                    mark(potential_address, heapdata);
+                    mark_heap(potential_address, heapdata);
                 heap_address+=8;
             }
         }
