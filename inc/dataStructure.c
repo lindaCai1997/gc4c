@@ -1,5 +1,4 @@
-/*
- * dataStructure.c
+/*dataStructure.c
  *
  * implementation of the data structure
  */
@@ -37,8 +36,7 @@ void DataStructure_destroy(DataStructure* ds)
     ds = NULL;
 }
 
-void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated)
-{
+void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated){
     if(ds == NULL)
     {
         fprintf(stderr, "DataStructure is not initialized\n");
@@ -71,6 +69,7 @@ void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated)
         ds->linkSize++;
     }
 
+
     /* Insert from tail */
     else if(newNode->address > ds->tail->address)
     {
@@ -79,12 +78,11 @@ void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated)
         ds->tail = newNode;
         ds->linkSize++;
     }
-
     /* Insert between head and tail */
     else
     {
         Node* current = ds->head;
-        Node* previous;
+        Node* previous = NULL;
         while(current != NULL && (current->address < newNode->address))
         {
             previous = current;
@@ -115,7 +113,6 @@ void Node_remove(DataStructure* ds, void* address)
     //Only one node in the structure
     if(ds->linkSize == 1)
     {
-        free(ds->head->address);
         free(ds->head);
         ds->head = NULL;
         ds->tail = NULL;
@@ -128,7 +125,7 @@ void Node_remove(DataStructure* ds, void* address)
     if(ds->head->address == address)
     {
         Node* temp = ds->head->next;
-        free(ds->head->address);
+		free(ds->head->address);
         free(ds->head);
         ds->head = temp;
         ds->linkSize--;
@@ -140,7 +137,7 @@ void Node_remove(DataStructure* ds, void* address)
         while(current->next != ds->tail )
             current = current->next;
         current->next = NULL;
-        free(ds->tail->address);
+		free(ds->tail->address);
         free(ds->tail);
         ds->tail = current;
         ds->linkSize--;
@@ -161,7 +158,7 @@ void Node_remove(DataStructure* ds, void* address)
             return;
         }
         previous->next = current->next;
-        free(current->address);
+		free(current -> address);
         free(current);
         current = NULL;
         ds->linkSize--;
@@ -202,7 +199,7 @@ void DataStructure_display(DataStructure* ds)
     while(current != NULL)
     {
         if(count % 5 == 0)
-            fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
         fprintf(stderr, "%p ", current->address);
         current = current->next;
         count++;
@@ -210,75 +207,3 @@ void DataStructure_display(DataStructure* ds)
     fprintf(stderr, "\n");
     fprintf(stderr, "End of Print. \n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-void DataStructure_init(DataStructure* ds){
-    size_t size = 10;
-    ds->NodeList = malloc(sizeof(Node*) * size);
-    ds->NodeListSize = size;
-    ds->NodeListCount = 0;
-}
-
-void DataStructure_destroy(DataStructure* ds){
-}
-
-void Node_insert(DataStructure* ds, void* address){
-    
-    if(_metaData == NULL){
-        _metaData = malloc(sizeof(DataStructure));
-        DataStructure_init(_metaData);
-    }
-
-    if(ds->NodeListCount == ds->NodeListSize){
-        size_t allocationSize = 2 * ds->NodeListSize;
-        ds->NodeList = realloc(ds->NodeList, sizeof(Node*) * allocationSize);
-        ds->NodeListSize = allocationSize;
-    }
-
-    ds->NodeList[ds->NodeListCount] = malloc(sizeof(Node));
-    ds->NodeList[ds->NodeListCount]->mark = 0;
-    ds->NodeList[ds->NodeListCount]->address = address;
-    ds->NodeListCount++;
-
-}
-
-void Node_remove(DataStructure* ds, void* address)
-{
-    size_t i;
-    for(i = 0; i < _metaData->NodeList)
-}
-*/
-
-
-
