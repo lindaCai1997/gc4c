@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "../inc/malloc.h"
 
 //test cases for gc 
 void test_gc_one_layer(){
