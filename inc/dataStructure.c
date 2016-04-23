@@ -183,6 +183,7 @@ void Node_remove(DataStructure* ds, void* address)
     //Only one node in the structure
     if(ds->linkSize == 1)
     {
+        free(ds->head->address);
         free(ds->head);
         ds->head = NULL;
         ds->tail = NULL;
@@ -248,6 +249,7 @@ void Node_remove_r(DataStructure* ds, void* address)
     //Only one node in the structure
     if(ds->linkSize == 1)
     {
+        free(ds->head->address);
         free(ds->head);
         ds->head = NULL;
         ds->tail = NULL;

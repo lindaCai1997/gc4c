@@ -2,7 +2,7 @@ OBJS_DIR = .objs
 
 # define all of student executables
 EXE1=dataStructure
-EXE2=test
+EXE2=malloc
 EXES_STUDENT=$(EXE1) $(EXE2)
 
 # list object file dependencies for each
