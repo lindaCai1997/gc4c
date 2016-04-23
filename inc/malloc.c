@@ -12,7 +12,7 @@
 #include "malloc.h"
 #include "dataStructure.h" 
 #include "mark_and_sweep.h"
-#include "gc_thread.h"
+#include "gc_pthread.h"
 
 #undef malloc
 #undef calloc
@@ -36,14 +36,27 @@ void* clean_helper()
     pthread_mutex_lock(&_SIGNAL_MUTEX);
     _CLEAN_FLAG = 1;
     pthread_mutex_unlock(&_SIGNAL_MUTEX);
-    if(_pthread_ds != NULL)
+    /*
+    if(_pthread_ds != null)
     {
-        Node* current = _pthread_ds->head;
-        pthread_t calling_thread_PID = pthread_self();
-        while(current != NULL)
+        node* current = _pthread_ds->head;
+        pthread_t calling_thread_pid = pthread_self();
+        while(current != null)
         {
             pthread_t pid = (pthread_t) current->address;
-            if(pid != calling_thread_PID) //put all other threads to sleep
+            if(pid != calling_thread_pid) //put all other threads to sleep
+                pthread_kill(pid, sigusr1); 
+            current = current->next;
+        }
+    }*/
+    llNode* current = pthread_ll_head;
+    if(current != null)
+    {
+        pthread_t calling_thread_pid = pthread_self();
+        while(current != NULL)
+        {
+            pthread_t pid = (pthread_t)current->value;
+            if(pid != calling_thread_pid) //put all other threads to sleep
                 pthread_kill(pid, SIGUSR1); 
             current = current->next;
         }
@@ -91,13 +104,13 @@ void gc_init()
  * initiate a thread-safe gc
  */
 void gc_init_r(){
-    CLEAN_FLAG = 0;
+    _CLEAN_FLAG = 0;
     gc_init();
     gc_pthread_init();
-    phtread_t* tid = (pthread_t*) malloc(sizeof(pthread_t));
-    *tid = pthread_self();
+//    *tid = pthread_self();
+    ll_insertNode(pthread_ll_head, pthread_self());
     fprintf(stderr, "I am the main thread id: %d\n",(int)(*tid));
-    Node_insert(_pthread_ds, (void*) tid, 0);
+    // Node_insert(_pthread_ds, (void*) tid, 0);
     signal(SIGUSR1, SIGNALHANDLER);
 }
 

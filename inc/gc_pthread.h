@@ -2,12 +2,12 @@
 #define _GC_PTHREAD_H_
 
 #include <pthread.h>
-#include "linkList.h"
+#include "linkedList.h"
 
 #define pthread_create(thread, attr, start_routine, arg) gc_pthread_create(thread, attr, start_routine, arg)
 #define pthread_join(thread, retval) gc_pthread_join(thread, retval)
 
-static llNode* head = NULL;
+llNode* pthread_ll_head = NULL;
 
 int gc_pthread_join(pthread_t thread, void **retval);
 int gc_pthread_create(pthread_t *thread, const pthread_attr_t *attr,

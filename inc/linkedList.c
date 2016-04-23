@@ -1,7 +1,9 @@
 #include "linkedList.h"
+#include <stdlib.h>
 
 void ll_insertNode(llNode* head, void* value){
     llNode* n = (llNode*)malloc(sizeof(llNode));
+    n->value = malloc(sizeof(long));
     n->value = value;
 
     // list is empty
@@ -21,7 +23,7 @@ void ll_insertNode(llNode* head, void* value){
 
     llNode* temp = head;
 
-    while(temp->next && *(long*)(temp->next->value) < value){
+    while(temp->next && *(long*)(temp->next->value) < (long)value){
         temp = temp->next;
     }
 
@@ -34,10 +36,11 @@ void* ll_returnMin(llNode* head){
     return head->value;
 }
 
-void ll_destroy(){
+void ll_destroy(llNode* head){
     llNode* temp = head;
 
     while(temp){
+        free(temp->value);
         free(temp);
         temp = temp->next;
     }
@@ -55,6 +58,7 @@ void ll_removeNode(llNode* head, void* value){
             if(temp == head)
                 head = temp->next;
             temp->next = NULL;
+            free(temp->value);
             free(temp);
         }   
         if(prev == NULL)
