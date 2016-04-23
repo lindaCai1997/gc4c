@@ -41,9 +41,23 @@ void* clean_helper()
  */
 void gc_init()
 {
+    size_t i;
+    char num[100];
+    char again[100];
+    register size_t j asm("r11");
+    asm("movq %rbp, %r12\n\t"
+        "popq %rbp\n\t"
+        "movq %rbp, %r11\n\t"
+        "movq %r12, %rbp");
+    sprintf(num, "%zx", j);
+    size_t k = 0;
+    for (k = 0; k < strlen(num); k++){
+        again[k] = num[k];
+    }
+    again[strlen(num)] = '\0';
+    sscanf(again, "%zx", i);
+    set_stack_bottom(i);
     _metaData = DataStructure_init();
-//    _running = 1;
-//    pthread_create(&pid, NULL, clean_helper, NULL);
     //user calls this at the beginning of the program
     //we need to create a gc_thread to clean data
 }
