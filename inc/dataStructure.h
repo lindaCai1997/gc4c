@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <pthread.h>
 
 typedef struct Node{
     int mark;
@@ -26,11 +26,14 @@ typedef struct {
 
 static DataStructure* _metaData = NULL;
 static int _running;
+static pthread_mutex_t _ds_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 DataStructure* DataStructure_init();
 void DataStructure_destroy(DataStructure*);
 void Node_insert(DataStructure*, void*, size_t);
+void Node_insert_r(DataStructure*, void*, size_t);
 void Node_remove(DataStructure*, void*);
+void Node_remove_r(DataStructure*, void*);
 void* DataStructure_findNode(DataStructure*, void*);
 void DataStructure_display(DataStructure*);
 

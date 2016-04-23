@@ -122,6 +122,17 @@ void mark_all_on_stack(DataStructure *heapdata){
 	   	curr = curr -> next;		
 	}	
 }
+
+void mark_all_on_stack_r(DataStructure *heapdata){
+    pthread_mutex_lock(&_mark_sweep_mtx);
+	Node* curr = heapdata -> head;
+	while (curr != NULL){
+		curr -> mark = 0;
+	   	curr = curr -> next;		
+	}	
+    pthread_mutex_unlock(&_mark_sweep_mtx);
+}
+
 void sweep(DataStructure *heapdata){
 	Node* current = heapdata -> head;
 	Node* temp = current;

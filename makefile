@@ -1,5 +1,5 @@
 CC = clang
-CCFLAGS = -std=c99 -c -MMD -MP -D_GNU_SOURCE -Wall
+CCFLAGS = -std=c99 -c -MMD -MP -D_GNU_SOURCE -Wall -pthread
 DEBUGFLAGS = -g
 ASANFLAGS = -fsanitize=leak -fno-omit-frame-pointer
 

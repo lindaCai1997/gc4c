@@ -103,6 +103,76 @@ void Node_insert(DataStructure* ds, void* address, size_t sizeAllocated){
     return;
 }
 
+void Node_insert_r(DataStructure* ds, void* address, size_t sizeAllocated){
+    if(ds == NULL)
+    {
+        fprintf(stderr, "DataStructure is not initialized\n");
+        return;
+    }
+
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->mark = 0;
+    newNode->size = sizeAllocated;
+    newNode->address = address;
+
+    /* When there is no node in the DataStructure, 
+        insert the node and set head and tail. */
+    pthread_mutex_lock(&_ds_mtx);
+    if(ds->linkSize == 0)
+    {
+        ds->head = newNode;
+        ds->tail = newNode;
+        newNode->next = NULL;
+        ds->linkSize++;
+        pthread_mutex_unlock(&_ds_mtx);
+        return;
+    }
+
+    /* When there are nodes in the DataStructure,
+        insert the node based on the size of address. */
+    /* Insert from head*/
+    if(newNode->address < ds->head->address)
+    {
+        newNode->next = ds->head;
+        ds->head = newNode;
+        ds->linkSize++;
+    }
+
+
+    /* Insert from tail */
+    else if(newNode->address > ds->tail->address)
+    {
+        newNode->next = NULL;
+        ds->tail->next = newNode;
+        ds->tail = newNode;
+        ds->linkSize++;
+    }
+    /* Insert between head and tail */
+    else
+    {
+        Node* current = ds->head;
+        Node* previous = NULL;
+        while(current != NULL && (current->address < newNode->address))
+        {
+            previous = current;
+            current = current->next;
+        }
+
+        //current must not equal to NULL
+        if(current == NULL)
+        {
+             fprintf(stderr, "Something Went Wrong. Line: %d\n", __LINE__);
+             exit(EXIT_FAILURE);
+        }   
+
+        previous->next = newNode;
+        newNode->next = current;
+        ds->linkSize++;
+    }
+    pthread_mutex_unlock(&_ds_mtx);
+    return;
+}
+
 void Node_remove(DataStructure* ds, void* address)
 {
     if(ds == NULL || ds->linkSize == 0)
@@ -163,6 +233,73 @@ void Node_remove(DataStructure* ds, void* address)
         current = NULL;
         ds->linkSize--;
     }
+    return;
+}
+
+void Node_remove_r(DataStructure* ds, void* address)
+{
+    if(ds == NULL || ds->linkSize == 0)
+    {
+        fprintf(stderr, "The dataStructure is empty\n");
+        return;
+    }
+
+    pthread_mutex_lock(&_ds_mtx);
+    //Only one node in the structure
+    if(ds->linkSize == 1)
+    {
+        free(ds->head);
+        ds->head = NULL;
+        ds->tail = NULL;
+        ds->linkSize--;
+        pthread_mutex_unlock(&_ds_mtx);
+        return;
+    }
+
+    //More than one node in the structure
+    //Remove the head
+    if(ds->head->address == address)
+    {
+        Node* temp = ds->head->next;
+		free(ds->head->address);
+        free(ds->head);
+        ds->head = temp;
+        ds->linkSize--;
+    }
+    //Remove the tail
+    else if(ds->tail->address == address)
+    {
+        Node* current = ds->head;
+        while(current->next != ds->tail )
+            current = current->next;
+        current->next = NULL;
+		free(ds->tail->address);
+        free(ds->tail);
+        ds->tail = current;
+        ds->linkSize--;
+    }
+    //Remove from middle
+    else
+    {
+        Node* current = ds->head;
+        Node* previous;
+        while(current != NULL && current->address != address)
+        {
+            previous = current;
+            current = current->next;
+        }   
+        if(current == NULL)
+        {
+            fprintf(stderr, "No Node Matched To Be Removed. Line: %d\n", __LINE__);
+            return;
+        }
+        previous->next = current->next;
+		free(current -> address);
+        free(current);
+        current = NULL;
+        ds->linkSize--;
+    }
+    pthread_mutex_unlock(&_ds_mtx);
     return;
 }
 

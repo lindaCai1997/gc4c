@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <pthread.h>
 #include "malloc.h"
+#include "malloc_r.c"
 #include "dataStructure.h" 
 #include "mark_and_sweep.h"
 
@@ -35,6 +36,9 @@ void* clean_helper()
     return NULL;
 }
 
+/*
+ * should be called by one thread
+ */
 void gc_init()
 {
     _metaData = DataStructure_init();
@@ -44,6 +48,18 @@ void gc_init()
     //we need to create a gc_thread to clean data
 }
 
+/*
+ * should be called by one thread
+ * initiate a thread-safe gc
+ */
+void gc_init_r(){
+    _gcMultiThreaded = 1;
+    gc_init();
+}
+
+/*
+ * should be called by one thread
+ */
 void gc_destroy()
 {
      _running = 0;
