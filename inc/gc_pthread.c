@@ -2,18 +2,17 @@
  * gc_pthread.c
  */
 
-#include "dataStructure.h"
-#include <pthread.h>
+#include "gc_pthread.h"
 
 #undef pthread_create
 #undef pthread_join
 
 
-extern DataStructure* _pthread_ds = NULL;
+/*extern DataStructure* _pthread_ds = NULL;
 
 void gc_pthread_init(){
-    //_pthread_ds = (DataStructure*)malloc(sizeof(DataStructure));
-   _pthread_ds = DataStructure_init(); 
+    _pthread_ds = (DataStructure*)malloc(sizeof(DataStructure));
+   DataStructure_init(_pthread_ds); 
 }
 
 void gc_pthread_destroy(){
@@ -25,9 +24,7 @@ int gc_pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     if(_pthread_ds == NULL)
         gc_pthread_init();
     int ret = pthread_create(thread, attr, start_routine, arg);
-    pthread_t* tid_copy = (pthread_t*) malloc(sizeof(pthread_t));
-    *tid_copy = *thread;
-    Node_insert(_pthread_ds, tid_copy, 0);
+    Node_insert(thread, pid);
     return ret; 
 }
 
@@ -42,5 +39,19 @@ int gc_pthread_join(pthread_t thread, void** retval){
         }
     }
 
+    return pthread_join(thread, retval);
+}*/
+
+
+
+int gc_pthread_create(pthread_t *thread, const pthread_attr_t *attr,
+                           void *(*start_routine) (void *), void *arg){
+    int ret = pthread_create(thread, attr, start_routine, arg);
+    ll_insertNode(head, thread);
+    return ret; 
+}
+
+int gc_pthread_join(pthread_t thread, void** retval){
+    ll_removeNode(head, &thread);
     return pthread_join(thread, retval);
 }
