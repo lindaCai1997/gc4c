@@ -5,6 +5,9 @@ size_t  heap_bottom;
 size_t  stack_bottom;
 size_t  stack_top;
 
+void set_stack_bottom(size_t bottom){
+    stack_bottom = bottom;
+}
 void find_stack_bottom(){
     // the 28th number in /proc/self/stat is the start of the stack
     FILE* statfp = fopen("/proc/self/stat", "r");
