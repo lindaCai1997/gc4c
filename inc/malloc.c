@@ -77,6 +77,7 @@ void* clean_helper()
 void gc_init()
 {
     size_t i;
+    size_t k = 0;
     char num[100];
     char again[100];
     for (k = 0; k < 100; k++){
@@ -89,7 +90,7 @@ void gc_init()
         "movq %rbp, %r11\n\t"
         "movq %r12, %rbp");
     sprintf(num, "%zx", j);
-    size_t k = 0;
+    
     for (k = 0; k < strlen(num); k++){
         again[k] = num[k];
     }
