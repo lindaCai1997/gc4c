@@ -81,7 +81,7 @@ void gc_init()
         again[k] = num[k];
     }
     again[strlen(num)] = '\0';
-    sscanf(again, "%zx", i);
+    sscanf(again, "%zx", &i);
     set_stack_bottom(i);
     _metaData = DataStructure_init();
 }
