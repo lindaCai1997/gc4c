@@ -44,6 +44,10 @@ void gc_init()
     size_t i;
     char num[100];
     char again[100];
+    for (k = 0; k < 100; k++){
+        num[k] = 0;
+        again[k] = 0;
+    }
     register size_t j asm("r11");
     asm("movq %rbp, %r12\n\t"
         "popq %rbp\n\t"
