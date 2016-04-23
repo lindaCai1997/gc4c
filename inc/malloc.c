@@ -10,29 +10,51 @@
 #include <stddef.h>
 #include <pthread.h>
 #include "malloc.h"
-#include "malloc_r.c"
 #include "dataStructure.h" 
 #include "mark_and_sweep.h"
+#include "gc_thread.h"
 
 #undef malloc
 #undef calloc
 #undef realloc
 #undef free
 
-pthread_t pid = 0; 
+void SIGNALHANDLER()
+{
+    fprintf(stderr, "I am thread: %d.  I will sleep for a while...\n", (int)pthread_self());
+    pthread_mutex_lock(&_SIGNAL_MUTEX);
+    while(_CLEAN_FLAG)
+    {
+        pthread_cond_wait(&_SIGNAL_CV, &_SIGNAL_MUTEX);
+    }
+    pthread_mutex_unlock(&_SIGNAL_MUTEX);
+    fprintf(stderr, "I am thread: %d. I am awake!!!!\n", (int)pthread_self());
+}
+
 void* clean_helper()
 {
-//    while(_running)
-//    {
-
-//        find_stack_bottom();
-        mark_on_stack(_metaData);
-		mark_on_heap(_metaData);
-        //stop the all other threads except this one
-        sweep(_metaData);
-        //resume the all other threads
-//        sleep(5);
-//    }
+    pthread_mutex_lock(&_SIGNAL_MUTEX);
+    _CLEAN_FLAG = 1;
+    pthread_mutex_unlock(&_SIGNAL_MUTEX);
+    if(_pthread_ds != NULL)
+    {
+        Node* current = _pthread_ds->head;
+        pthread_t calling_thread_PID = pthread_self();
+        while(current != NULL)
+        {
+            pthread_t pid = (pthread_t) current->address;
+            if(pid != calling_thread_PID) //put all other threads to sleep
+                pthread_kill(pid, SIGUSR1); 
+            current = current->next;
+        }
+    }
+    mark_on_stack(_metaData);
+	mark_on_heap(_metaData);
+    sweep(_metaData);
+    pthread_mutex_lock(&_SIGNAL_MUTEX);
+    _CLEAN_FLAG = 0;
+    pthread_cond_broadcast(&_SIGNAL_CV);
+    pthread_mutex_unlock(&_SIGNAL_MUTEX);
     return NULL;
 }
 
@@ -62,8 +84,6 @@ void gc_init()
     sscanf(again, "%zx", i);
     set_stack_bottom(i);
     _metaData = DataStructure_init();
-    //user calls this at the beginning of the program
-    //we need to create a gc_thread to clean data
 }
 
 /*
@@ -71,8 +91,14 @@ void gc_init()
  * initiate a thread-safe gc
  */
 void gc_init_r(){
-    _gcMultiThreaded = 1;
+    CLEAN_FLAG = 0;
     gc_init();
+    gc_pthread_init();
+    phtread_t* tid = (pthread_t*) malloc(sizeof(pthread_t));
+    *tid = pthread_self();
+    fprintf(stderr, "I am the main thread id: %d\n",(int)(*tid));
+    Node_insert(_pthread_ds, (void*) tid, 0);
+    signal(SIGUSR1, SIGNALHANDLER);
 }
 
 /*
@@ -80,20 +106,18 @@ void gc_init_r(){
  */
 void gc_destroy()
 {
-     _running = 0;
-//     pthread_join(pid, NULL);
-//     find_stack_bottom();
      mark_all_on_stack(_metaData);
      sweep(_metaData);
      DataStructure_destroy(_metaData);
     //user calls this at the end of program
-    //we need to stop the gc_thread that we have created in the gc_init()
 }
 
 void* gc_malloc(size_t size){
+    pthread_mutex_lock(&MALLOC_MUTEX);
     void* userData = malloc(size);
     Node_insert(_metaData, userData, size);
 	clean_helper();
+    pthread_mutex_unlock(&MALLOC_MUTEX);
     return userData;
 }
 

@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stddef.h>
+#include <signal.h>
 #include "dataStructure.h" 
 #include "mark_and_sweep.h"
 
@@ -19,10 +20,15 @@
 #define calloc(nmemb, size) gc_calloc(nmemb, size)
 #define free(ptr) gc_free(ptr)
 
-int _gcMultiThreaded = 0;
+int _CLEAN_FLAG;
+void SIGNALHANDLER();
+pthread_mutex_t _SIGNAL_MUTEX = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t _MALLOC_MUTEX = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t _SIGNAL_CV = PTHREAD_COND_INITIALIZER;
+
 
 void gc_init();
-void gc_init_r();
+void gc_destroy();
 void* gc_malloc(size_t size);
 void* gc_realloc(void* ptr, size_t size);
 void gc_free(void* ptr);
