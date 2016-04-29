@@ -1,10 +1,23 @@
 #include "linkedList.h"
 #include <stdlib.h>
 
-void ll_insertNode(llNode* head, void* value){
+void ll_insertNode(llNode* head, void* value, void* value1 = NULL, void* value2 = NULL){
     llNode* n = (llNode*)malloc(sizeof(llNode));
     n->value = malloc(sizeof(long));
-    n->value = value;
+    n->value = *value;
+
+    if(value1){
+        n->value1 = malloc(sizeof(long));
+        n->value1 = *value1;
+    } else
+        n->value1 = NULL;
+
+    if(value2){
+        n->value2 = malloc(sizeof(long));
+        n->value2 = *value2;
+    } else
+        n->value2 = NULL;
+
 
     // list is empty
     if(head == NULL){
