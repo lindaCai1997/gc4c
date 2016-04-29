@@ -36,19 +36,6 @@ void* clean_helper()
     pthread_mutex_lock(&_SIGNAL_MUTEX);
     _CLEAN_FLAG = 1;
     pthread_mutex_unlock(&_SIGNAL_MUTEX);
-    /*
-    if(_pthread_ds != null)
-    {
-        node* current = _pthread_ds->head;
-        pthread_t calling_thread_pid = pthread_self();
-        while(current != null)
-        {
-            pthread_t pid = (pthread_t) current->address;
-            if(pid != calling_thread_pid) //put all other threads to sleep
-                pthread_kill(pid, sigusr1); 
-            current = current->next;
-        }
-    }*/
     llNode* current = pthread_ll_head;
     if(current != null)
     {
