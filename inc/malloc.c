@@ -9,10 +9,12 @@
 #include <unistd.h>
 #include <stddef.h>
 #include <pthread.h>
+#include <string.h>
+#include "linkedList.h"
 #include "malloc.h"
-#include "dataStructure.h" 
-#include "mark_and_sweep.h"
 #include "gc_pthread.h"
+#include "mark_and_sweep.h"
+#include "dataStructure.h" 
 
 #undef malloc
 #undef calloc
@@ -96,7 +98,7 @@ void gc_init_r(){
     gc_init();
     gc_pthread_init();
 //    *tid = pthread_self();
-    ll_insertNode(pthread_ll_head, pthread_self());
+    ll_insertNode(pthread_ll_head, (long)pthread_self(), 0, 0);
     fprintf(stderr, "I am the main thread id: %d\n",(int)(*tid));
     // Node_insert(_pthread_ds, (void*) tid, 0);
     signal(SIGUSR1, SIGNALHANDLER);
