@@ -5,7 +5,8 @@
 
 void test_insert()
 {
-    DataStructure* ds = (DataStructure*) malloc(sizeof(DataStructure));
+    DataStructure* ds;
+    ds = DataStructure_init();
     fprintf(stderr, "Add 10 nodes to our DataStructure\n");
     int* int_arr = (int*) malloc(sizeof(int)*10);
     int i;
@@ -16,10 +17,12 @@ void test_insert()
     }
     DataStructure_display(ds);
     DataStructure_destroy(ds);
+    free(int_arr);
 }
 
 void test_remove(){
-    DataStructure* ds = (DataStructure*) malloc(sizeof(DataStructure));
+    DataStructure* ds;
+    ds = DataStructure_init();
     fprintf(stderr, "Add 10 nodes to our DataStructure\n");
     int* int_arr = (int*) malloc(sizeof(int)*10);
     int i;
@@ -36,10 +39,12 @@ void test_remove(){
     }
     DataStructure_display(ds);
     DataStructure_destroy(ds);
+    free(int_arr);
 }
 
-void* test_findNode(){
-    DataStructure* ds = (DataStructure*) malloc(sizeof(DataStructure));
+void test_findNode(){
+    DataStructure* ds;
+    ds = DataStructure_init();
     fprintf(stderr, "Add 10 nodes to our DataStructure\n");
     int* int_arr = (int*) malloc(sizeof(int)*10);
     int i;
@@ -59,42 +64,26 @@ void* test_findNode(){
     //assert(temp == (void*)&int_arr[4]);
     int test = 1;
     //Should not be found!
+    fprintf(stderr, "Finding Non-existing Value\n");
     temp = DataStructure_findNode(ds, &test);
-    fprintf(stderr, "Check our DataStructure is not altered\n");
+    fprintf(stderr, "Check whether our DataStructure is altered\n");
     DataStructure_display(ds);
     DataStructure_destroy(ds);
+    free(int_arr);
 }
 
-void test_findNode
 int main(){
+
+    fprintf(stderr, "Testing insert\n");
     test_insert();
+    fprintf(stderr, "\n");
+
+    fprintf(stderr, "Testing remove\n");
     test_remove();
+    fprintf(stderr, "\n");
+
+    fprintf(stderr, "Testing findNode\n");
     test_findNode();
+    fprintf(stderr, "\n");
     return 0;
 }
-
-
-
-
-
-
-
-/*
-void test1(){
-
-
-    int* x = malloc(sizeof(int));
-    *x = 5;
-    Node_insert(ds, x);
-
-    printf("%d\n", *(int*)(ds->NodeList[0]->address));
-
-
-}
-
-int main(){
-
-    test1();
-
-}
-*/

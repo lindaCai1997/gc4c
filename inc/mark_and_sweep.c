@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <assert.h>
 #include "mark_and_sweep.h"
-#include "dataStructure.h"
 
 size_t  heap_top;
 size_t  heap_bottom;

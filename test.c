@@ -1,6 +1,3 @@
-#include "inc/malloc.h"
-#include "inc/gc_pthread.h"
-
 //test cases for gc 
 void test_gc_one_layer(){
     gc_init();

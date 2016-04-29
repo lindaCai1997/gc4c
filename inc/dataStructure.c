@@ -5,6 +5,7 @@
 
 #include "dataStructure.h"
 
+static pthread_mutex_t _ds_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 DataStructure* DataStructure_init()
 {

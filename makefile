@@ -1,9 +1,9 @@
 CC = clang
-CCFLAGS = -std=c99 -c -MMD -MP -D_GNU_SOURCE -Wall -pthread
+CCFLAGS = -std=gnu99 -c -MMD -MP -D_GNU_SOURCE -Wall -pthread
 DEBUGFLAGS = -g
 ASANFLAGS = -fsanitize=leak -fno-omit-frame-pointer
 
-all: test1 test2 
+all: test1 
 debug: test-debug test2-debug
 asan: test1-asan test2-asan test1-without-gc4c-asan
 
@@ -28,7 +28,7 @@ test2-debug: malloc dataStructure mark_and_sweep tests/test2.c
 test2-asan: malloc dataStructure mark_and_sweep tests/test2.c
 	$(CC) $(ASANFLAGS) malloc.o dataStructure.o mark_and_sweep.o tests/test2.c -o test2-asan.exe
 
-malloc: dataStructure linkedList gc_pthread mark_and_sweep inc/malloc.h inc/malloc.c
+malloc: gc_pthread mark_and_sweep inc/malloc.h inc/malloc.c
 	$(CC) $(CCFLAGS) inc/malloc.h inc/malloc.c -c
 
 mark_and_sweep: dataStructure inc/mark_and_sweep.h inc/mark_and_sweep.c

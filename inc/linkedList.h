@@ -1,5 +1,5 @@
-#ifndef _DATASTRUCTURE_H_
-#define _DATASTRUCTURE_H_
+#ifndef _LINKED_LIST_H_
+#define _LINKED_LIST_H_
 
 typedef struct llNode {
     long threadID;

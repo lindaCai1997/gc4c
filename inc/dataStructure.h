@@ -24,9 +24,7 @@ typedef struct {
     size_t linkSize;
 } DataStructure;
 
-DataStructure* _metaData = NULL;
-static int _running;
-static pthread_mutex_t _ds_mtx = PTHREAD_MUTEX_INITIALIZER;
+// DataStructure* _metaData = NULL;
 
 DataStructure* DataStructure_init();
 void DataStructure_destroy(DataStructure*);

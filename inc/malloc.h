@@ -7,14 +7,11 @@
 #ifndef _MALLOC_H_
 #define _MALLOC_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include <stddef.h>
-#include <signal.h>
+#include <pthread.h>
 
 #define malloc(size) gc_malloc(size)
-#define realloc(ptr, size) gc_malloc(ptr, size)
+#define realloc(ptr, size) gc_realloc(ptr, size)
 #define calloc(nmemb, size) gc_calloc(nmemb, size)
 #define free(ptr) gc_free(ptr)
 
@@ -23,9 +20,6 @@ void SIGNALHANDLER();
 pthread_mutex_t _SIGNAL_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t _MALLOC_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t _SIGNAL_CV = PTHREAD_COND_INITIALIZER;
-
-extern DataStructure* _metaData;
-
 
 void gc_init();
 void gc_destroy();
