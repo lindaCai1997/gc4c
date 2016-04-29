@@ -47,11 +47,11 @@ int gc_pthread_join(pthread_t thread, void** retval){
 int gc_pthread_create(pthread_t *thread, const pthread_attr_t *attr,
                            void *(*start_routine) (void *), void *arg){
     int ret = pthread_create(thread, attr, start_routine, arg);
-    ll_insertNode(pthread_ll_head, thread);
+    ll_insertNode(pthread_ll_head, (long)(*thread), 0, 0);
     return ret; 
 }
 
 int gc_pthread_join(pthread_t thread, void** retval){
-    ll_removeNode(pthread_ll_head, &thread);
+    ll_removeNode(pthread_ll_head, (long)thread);
     return pthread_join(thread, retval);
 }

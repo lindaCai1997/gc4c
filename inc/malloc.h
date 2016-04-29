@@ -13,6 +13,7 @@
 #include <stddef.h>
 #include <signal.h>
 #include "dataStructure.h" 
+#include "linkedList.h"
 #include "mark_and_sweep.h"
 
 #define malloc(size) gc_malloc(size)
