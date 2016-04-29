@@ -10,13 +10,17 @@
 #include <stddef.h>
 #include <string.h>
 #include <signal.h>
-#include "malloc.h"
+#include <pthread.h>
 #include "gc_pthread.h"
+#include "malloc.h"
 // #include "dataStructure.h" 
 #include "mark_and_sweep.h"
 
 DataStructure* _metaData = NULL;
-llNode* pthread_ll_head = NULL;
+
+static pthread_mutex_t _SIGNAL_MUTEX = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t _MALLOC_MUTEX = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t _SIGNAL_CV = PTHREAD_COND_INITIALIZER;
 
 #undef malloc
 #undef calloc
@@ -67,6 +71,7 @@ void* clean_helper()
  */
 void gc_init()
 {
+    puts("gc_inti");
     size_t i;
     size_t k = 0;
     char num[100];
@@ -75,11 +80,14 @@ void gc_init()
         num[k] = 0;
         again[k] = 0;
     }
+
     register size_t j asm("r11");
+    
     asm("movq %rbp, %r12\n\t"
         "popq %rbp\n\t"
         "movq %rbp, %r11\n\t"
         "movq %r12, %rbp");
+        
     sprintf(num, "%zx", j);
     
     for (k = 0; k < strlen(num); k++){
@@ -87,7 +95,8 @@ void gc_init()
     }
     again[strlen(num)] = '\0';
     sscanf(again, "%zx", &i);
-    set_stack_bottom(i);
+    set_stack_bottom(&i);
+    printf("%p\n", &i);
     _metaData = DataStructure_init();
 }
 
@@ -99,7 +108,8 @@ void gc_init_r(){
     _CLEAN_FLAG = 0;
     gc_init();
 //    *tid = pthread_self();
-    ll_insertNode(pthread_ll_head, (long)pthread_self(), 0, 0);
+    // ll_insertNode(&pthread_ll_head, (long)pthread_self(), 0, 0);
+    gc_pthread_add_thread((long)pthread_self(),0, 0);
     fprintf(stderr, "I am the main thread id: %d\n", *(int*)(pthread_self()));
     // Node_insert(_pthread_ds, (void*) tid, 0);
     signal(SIGUSR1, SIGNALHANDLER);

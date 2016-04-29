@@ -17,9 +17,6 @@
 
 int _CLEAN_FLAG;
 void SIGNALHANDLER();
-pthread_mutex_t _SIGNAL_MUTEX = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t _MALLOC_MUTEX = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t _SIGNAL_CV = PTHREAD_COND_INITIALIZER;
 
 void gc_init();
 void gc_destroy();

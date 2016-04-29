@@ -48,7 +48,7 @@ void testLargeData(){
 }
 
 int main(){
-    printf("Test 1 with GC4C\n");
+    // printf("Test 1 with GC4C\n");
     gc_init();
     testSimple();
     testValidData();
