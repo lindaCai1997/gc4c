@@ -28,14 +28,20 @@ test2-debug: malloc dataStructure mark_and_sweep tests/test2.c
 test2-asan: malloc dataStructure mark_and_sweep tests/test2.c
 	$(CC) $(ASANFLAGS) malloc.o dataStructure.o mark_and_sweep.o tests/test2.c -o test2-asan.exe
 
-malloc: dataStructure inc/malloc.h inc/malloc.c
-	$(CC) $(CCFLAGS) dataStructure.o inc/malloc.h inc/malloc.c -c
+malloc: dataStructure linkedList gc_pthread mark_and_sweep inc/malloc.h inc/malloc.c
+	$(CC) $(CCFLAGS) dataStructure.o linkedList.o gc_pthread.o mark_and_sweep.o inc/malloc.h inc/malloc.c -c
 
 dataStructure: inc/dataStructure.h inc/dataStructure.c
 	$(CC) $(CCFLAGS) inc/dataStructure.h inc/dataStructure.c -c
 
 mark_and_sweep: inc/mark_and_sweep.h inc/mark_and_sweep.c 
 	$(CC) $(CCFLAGS) inc/mark_and_sweep.h inc/mark_and_sweep.c -c 
+
+gc_pthread: linkedList
+	$(CC) $(CCFLAGS) linkedList.o inc/gc_pthread.h inc/gc_pthread.c -c
+
+linkedList: 
+	$(CC) $(CCFLAGS) inc/linkedList.h inc/linkedList.c -c
 
 clean:
 	rm -rf *o *.exe

@@ -2,17 +2,16 @@
 #define _DATASTRUCTURE_H_
 
 typedef struct llNode {
-    void* value;
-    void* value1;
-    void* value2;
+    long threadID;
+    long stack_top;
+    long stack_bottom;
     struct llNode* next;
 } llNode;
 
 
-void ll_insertNode(llNode* head, void* value, void* value1 = NULL, void* value2 = NULL);
-void* ll_returnMin(llNode* head);
+void ll_insertNode(llNode* head, long threadID, long stack_top, long stack_bottom);
 void ll_destroy();
-void ll_removeNode(llNode* head, void* value);
+void ll_removeNode(llNode* head, long threadID);
 
 
 #endif

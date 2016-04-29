@@ -50,7 +50,7 @@ void* clean_helper()
         }
     }*/
     llNode* current = pthread_ll_head;
-    if(current != null)
+    if(current != NULL)
     {
         pthread_t calling_thread_pid = pthread_self();
         while(current != NULL)
@@ -127,11 +127,11 @@ void gc_destroy()
 }
 
 void* gc_malloc(size_t size){
-    pthread_mutex_lock(&MALLOC_MUTEX);
+    pthread_mutex_lock(&_MALLOC_MUTEX);
     void* userData = malloc(size);
     Node_insert(_metaData, userData, size);
 	clean_helper();
-    pthread_mutex_unlock(&MALLOC_MUTEX);
+    pthread_mutex_unlock(&_MALLOC_MUTEX);
     return userData;
 }
 
