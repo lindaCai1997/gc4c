@@ -13,7 +13,7 @@ void ll_insertNode(llNode** head, long threadID, long stack_top, long stack_bott
     if(*head == NULL){
         *head = n;
         n->next = NULL;
-        fprintf(stderr, "head: %p\n", *head );
+        // fprintf(stderr, "head: %p\n", *head );
         return;
     } else {
         n->next = *head;
