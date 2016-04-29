@@ -14,19 +14,23 @@ void ll_insertNode(llNode* head, long threadID, long stack_top, long stack_botto
         n->next = NULL;
         return;
     } else {
-        head->next = n;
+        n->next = head;
         head = n;
+        return;
     }
 }
 
 
 void ll_destroy(llNode* head){
-    llNode* temp = head;
-
-    while(temp){
-        free(temp);
-        temp = temp->next;
+    llNode* current = head;
+    llNode* temp = NULL;
+    while(current != NULL){
+        temp = current->next;
+        current->next = NULL;
+        free(current);
+        current = temp;
     }
+
 }
 
 void ll_removeNode(llNode* head, long threadID){
@@ -40,6 +44,7 @@ void ll_removeNode(llNode* head, long threadID){
                 head = temp->next;
             temp->next = NULL;
             free(temp);
+            break;
         }   
         if(prev == NULL)
             prev = head;
