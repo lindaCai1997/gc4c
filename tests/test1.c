@@ -1,6 +1,7 @@
 #include "../inc/malloc.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void testSimple(){
     printf("---- Test Simple ----\n");
