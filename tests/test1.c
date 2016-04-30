@@ -33,7 +33,7 @@ void testValidData(){
 
     for(int i = 0; i < size; i++){
 	   x[i] = malloc(sizeof(int));
-       printf("address: %zx\n", x[i]);
+       // printf("address: %zx\n", x[i]);
         *(x[i]) = i;
     }
 
@@ -73,11 +73,11 @@ void testCharacter(){
 
     for(int i = 0; i < 100; i++){
         if(*(arr[i]) != (char)i){
-            puts("FAILED");
+            puts("test character FAILED");
             return;
         }
     }
-	printf("SUCCESS");
+	puts("test character SUCCESS");
 }
 
 int main(){

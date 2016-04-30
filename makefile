@@ -5,7 +5,7 @@ ASANFLAGS = -fsanitize=leak -fno-omit-frame-pointer
 
 all: test1 
 debug: test1-debug 
-asan: test1-asan test2-asan test1-without-gc4c-asan
+asan: test1-asan
 
 test1: malloc tests/test1.c
 	$(CC) malloc.o dataStructure.o mark_and_sweep.o linkedList.o gc_pthread.o -lpthread tests/test1.c -o test1.out
@@ -13,8 +13,8 @@ test1: malloc tests/test1.c
 test1-debug: malloc-debug tests/test1.c
 	$(CC) $(DEBUGFLAGS) malloc.o dataStructure.o mark_and_sweep.o linkedList.o gc_pthread.o -lpthread tests/test1.c -o test1-debug.out
 
-test1-asan: malloc dataStructure mark_and_sweep tests/test1.c
-	$(CC) $(ASANFLAGS) malloc.o dataStructure.o mark_and_sweep.o tests/test1.c -o test1-asan.exe
+test1-asan: malloc tests/test1.c
+	$(CC) $(ASANFLAGS) malloc.o dataStructure.o mark_and_sweep.o linkedList.o gc_pthread.o -lpthread tests/test1.c -o test1-asan.out
 
 test1-without-gc4c-asan: tests/test1-without-gc4c.c
 	$(CC) $(ASANFLAGS) tests/test1-without-gc4c.c -o test1-without-gc4c-asan.exe

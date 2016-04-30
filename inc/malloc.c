@@ -133,7 +133,7 @@ void gc_destroy()
 void* gc_malloc(size_t size){
     pthread_mutex_lock(&_MALLOC_MUTEX);
     void* userData = malloc(size);
-	printf("userData: %zx\n", userData);
+	// printf("userData: %zx\n", userData);
     Node_insert(_metaData, userData, size);
 	clean_helper();
     pthread_mutex_unlock(&_MALLOC_MUTEX);
