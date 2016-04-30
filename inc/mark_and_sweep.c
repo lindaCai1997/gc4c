@@ -90,6 +90,8 @@ void mark_on_stack(DataStructure *heapdata){
   	size_t address_stack = stack_top;
     size_t address_heap = 0;
     for (; address_stack < stack_bottom; address_stack += sizeof(size_t)){
+        if(address_stack == stack_top)
+            printf("thread id: %lu\n", pthread_self());
 		 address_heap = *((size_t*)address_stack);
 //		 printf("addess_stack : %zx address_heap:%zx\n", (size_t)address_stack, address_heap);
          if (address_heap >= heap_top && address_heap <= heap_bottom)

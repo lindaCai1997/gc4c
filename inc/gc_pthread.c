@@ -5,7 +5,6 @@
 #include "gc_pthread.h"
 #include <pthread.h>
 
-#undef pthread_create
 #undef pthread_join
 
 

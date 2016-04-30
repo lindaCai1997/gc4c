@@ -11,12 +11,14 @@
 #include <string.h>
 #include <signal.h>
 #include <pthread.h>
-#include "gc_pthread.h"
+// #include "gc_pthread.h"
 #include "malloc.h"
 // #include "dataStructure.h" 
 #include "mark_and_sweep.h"
+#include "linkedList.h"
 
 DataStructure* _metaData = NULL;
+static llNode* pthread_ll_head = NULL;
 
 static pthread_mutex_t _SIGNAL_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t _MALLOC_MUTEX = PTHREAD_MUTEX_INITIALIZER;
@@ -26,6 +28,12 @@ static pthread_cond_t _SIGNAL_CV = PTHREAD_COND_INITIALIZER;
 #undef calloc
 #undef realloc
 #undef free
+#undef pthread_join
+
+int gc_pthread_join(pthread_t thread, void** retval){
+    ll_removeNode(&pthread_ll_head, (long)thread);
+    return pthread_join(thread, retval);
+}
 
 void SIGNALHANDLER()
 {
@@ -60,8 +68,9 @@ void* clean_helper()
     // mark_on_stack(_metaData);
     llNode* node = pthread_ll_head;
     while(node){
-        set_stack_top_bottom(node->stack_top, node->stack_bottom);
-        mark_on_stack();
+        set_stack_top_and_bottom(node->stack_top, node->stack_bottom);
+        mark_on_stack(_metaData);
+        node = node->next;
     }
 	mark_on_heap(_metaData);
     sweep(_metaData);
@@ -110,6 +119,8 @@ void gc_init()
     
     insertStackTopBottom();
 
+    printf("main thread stack top: %p\n", (void*)pthread_ll_head->stack_top);
+
    // printf("hello: %zx:\n", i);
     _metaData = DataStructure_init();
 }
@@ -126,13 +137,15 @@ void gc_init_r(){
     // gc_pthread_add_thread((long)pthread_self(),0, 0);
     // fprintf(stderr, "I am the main thread id: %d\n", *(int*)(pthread_self()));
     // Node_insert(_pthread_ds, (void*) tid, 0);
+
+
     signal(SIGUSR1, SIGNALHANDLER);
 }
 
 void insertStackTopBottom(){
     pthread_attr_t Attributes;
     void *StackAddress;
-    int StackSize;
+    size_t StackSize;
 
     // Get the pthread attributes
     memset (&Attributes, 0, sizeof (Attributes));
@@ -148,7 +161,7 @@ void insertStackTopBottom(){
   //  printf ("Stack size:    %u bytes\n", StackSize);
   //  printf ("Stack bottom:  %p\n", StackAddress + StackSize);
   
-    ll_insertNode(&pthread_ll_head, pthread_self(), (size_t)StackAddress, (size_t)(StackAddress + StackAddress));
+    ll_insertNode(&pthread_ll_head, pthread_self(), (size_t)StackAddress, (size_t)(StackAddress + StackSize));
 
 }
 
@@ -166,7 +179,7 @@ void gc_destroy()
 void* gc_malloc(size_t size){
     pthread_mutex_lock(&_MALLOC_MUTEX);
     
-    if(findNode(pthread_ll_head, pthread_self()) == NULL){
+    if(ll_findNode(pthread_ll_head, pthread_self()) == NULL){
         insertStackTopBottom();
     }
 

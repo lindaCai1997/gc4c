@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 
 void testSimple(){
     printf("---- Test Simple ----\n");
@@ -78,9 +79,15 @@ void testCharacter(){
 	puts("test character SUCCESS");
 }
 
+void* starter(){
+    
+    testCharacter();
+    return NULL;
+}
+
 int main(){
     // printf("Test 1 with GC4C\n");
-    gc_init();
+    gc_init_r();
 //    testSimple();
 //	testSimple();
     testValidData();
@@ -89,7 +96,16 @@ int main(){
     testLargeData();
 	testLargeData();
     testCharacter();
-	testCharacter();
+    testCharacter();
+/*
+    pthread_t pids[10];
+
+    for(int i = 0; i < 10; i++)
+        pthread_create(&pids[i], NULL, starter, NULL);
+
+    for(int i = 0; i < 10; i++)
+        pthread_join(pids[i], NULL);
+*/
     gc_destroy();
     return 0;
 }

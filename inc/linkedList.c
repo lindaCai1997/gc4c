@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-llNode* findNode(llNode* head, size_t threadID){
+llNode* ll_findNode(llNode* head, size_t threadID){
 
    llNode* node = head;
 
