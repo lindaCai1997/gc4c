@@ -9,11 +9,6 @@ size_t  heap_bottom;
 size_t  stack_bottom;
 size_t  stack_top;
 
-void set_stack_bottom(size_t bottom){
-    stack_bottom = bottom;
-	find_stack_bottom();
-}
-
 void find_stack_bottom(){
     // the 28th number in /proc/self/stat is the start of the stack
     FILE* statfp = fopen("/proc/self/stat", "r");
@@ -75,11 +70,15 @@ int mark_heap(size_t sp, DataStructure* heapdata){
 
 }
 
+void set_stack_top(size_t stack_top_input, size_t stack_bottom_input){
+	stack_top = stack_top_input;
+	stack_bottom = stack_bottom_input;
+}
 
 void mark_on_stack(DataStructure *heapdata){
 
 	mark_all_on_stack(heapdata);
-	find_stack_bottom();
+//	find_stack_bottom();
     size_t i = 0;
     stack_top = (size_t)(&i);
 	if (heapdata -> head == NULL)
@@ -134,6 +133,7 @@ void mark_on_heap(DataStructure *heapdata){
 		current = current -> next;
     } while(current != NULL);
 }
+
 void mark_all_on_stack(DataStructure *heapdata){
 	Node* curr = heapdata -> head;
 	while (curr != NULL){

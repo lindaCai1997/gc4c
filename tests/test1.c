@@ -34,12 +34,7 @@ void testValidData(){
  
     for(int i = 0; i < size; i++){
 	   x[i] = malloc(sizeof(int));
-<<<<<<< HEAD
-  //     printf("address: %zx\n", x[i]);
-=======
-       // printf("address: %zx\n", x[i]);
->>>>>>> 6780d7585b585a90e552ecbf956b3f24a171bdb5
-        *(x[i]) = i;
+       *(x[i]) = i;
     }
 
 	for(int i = 0; i < size; i++){
@@ -86,8 +81,8 @@ void testCharacter(){
 int main(){
     // printf("Test 1 with GC4C\n");
     gc_init();
-    testSimple();
-	testSimple();
+//    testSimple();
+//	testSimple();
     testValidData();
 	testValidData();
 //	testSimple();
