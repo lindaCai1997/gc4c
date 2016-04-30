@@ -44,6 +44,7 @@ int mark(size_t sp, DataStructure* heapdata){
 }
 
 int mark_heap(size_t sp, DataStructure* heapdata){
+
 	Node* current = heapdata -> head;
     heap_top = (size_t)(current -> address);
     heap_bottom = (size_t)(heapdata -> tail -> address);
@@ -51,14 +52,16 @@ int mark_heap(size_t sp, DataStructure* heapdata){
 	if (current == NULL)
         return 0;
     do{ 
+//		printf("sp: %zx, current address: %zx\n", sp, current -> address);
 		if (sp ==  (size_t)(current -> address)){
 			if (current -> mark == 1)
 				return 1;
             current -> mark = 1; 
 			void* heap_address = current -> address;
 			size_t potential_address = 0;
+
 			while (heap_address < current -> address + current -> size){
-        			potential_address = *(size_t*)heap_address;
+        		potential_address = *(size_t*)heap_address;
         		if (potential_address >= heap_top && potential_address <= heap_bottom)
            			mark_heap(potential_address, heapdata);
         		heap_address += sizeof(size_t);
@@ -94,6 +97,15 @@ void mark_on_stack(DataStructure *heapdata){
              mark(address_heap, heapdata);
     }
 
+/*
+	Node* current = heapdata -> head;
+	printf("=======\n");
+	while (current != NULL){
+		printf("node address :%zx, node mark: %d\n", current -> address, current -> mark);
+	   	current = current -> next;	
+	}
+*/	
+
 }
 
 void mark_on_heap(DataStructure *heapdata){
@@ -104,6 +116,7 @@ void mark_on_heap(DataStructure *heapdata){
 	if (current == NULL || current == tail)
 		return;
 
+
     heap_top = (size_t)(current -> address);
     heap_bottom = (size_t)(tail -> address);
     do {
@@ -112,16 +125,15 @@ void mark_on_heap(DataStructure *heapdata){
     		size_t potential_address = 0;
     		while (heap_address <= current -> address + current -> size){
         		potential_address = *(size_t*)heap_address;
-//		 printf("addess_heap1 : %zx address_heap2:%zx\n", (size_t)heap_address, potential_address);
+//				printf("addess_heap1 : %zx address_heap2:%zx\n", (size_t)heap_address, potential_address);
         		if (potential_address >= heap_top && potential_address <= heap_bottom)
            			mark_heap(potential_address, heapdata);
         		heap_address += sizeof(size_t);
 			}
     	}
 		current = current -> next;
-    } while(current && tail && current != tail);
+    } while(current != NULL);
 }
-
 void mark_all_on_stack(DataStructure *heapdata){
 	Node* curr = heapdata -> head;
 	while (curr != NULL){
