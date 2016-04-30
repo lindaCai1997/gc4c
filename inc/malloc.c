@@ -95,8 +95,8 @@ void gc_init()
     }
     again[strlen(num)] = '\0';
     sscanf(again, "%zx", &i);
-    set_stack_bottom(&i);
-    printf("%p\n", &i);
+    set_stack_bottom(i);
+    printf("%p\n", i);
     _metaData = DataStructure_init();
 }
 
