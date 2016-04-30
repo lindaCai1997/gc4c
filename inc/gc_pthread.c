@@ -42,7 +42,26 @@ int gc_pthread_join(pthread_t thread, void** retval){
 
     return pthread_join(thread, retval);
 }*/
+/*
+void PrintStackInfo (void){   
+    pthread_attr_t Attributes;
+    void *StackAddress;
+    int StackSize;
 
+    // Get the pthread attributes
+    memset (&Attributes, 0, sizeof (Attributes));
+    pthread_getattr_np (pthread_self(), &Attributes);
+
+    // From the attributes, get the stack info
+    pthread_attr_getstack (&Attributes, &StackAddress, &StackSize);
+
+    // Done with the attributes
+    pthread_attr_destroy (&Attributes);
+
+    printf ("Stack top:     %p\n", StackAddress);
+    printf ("Stack size:    %u bytes\n", StackSize);
+    printf ("Stack bottom:  %p\n", StackAddress + StackSize);
+}
 
 
 int gc_pthread_create(pthread_t *thread, const pthread_attr_t *attr,
@@ -51,12 +70,10 @@ int gc_pthread_create(pthread_t *thread, const pthread_attr_t *attr,
     gc_pthread_add_thread((long)thread, 0, 0);
     return ret; 
 }
+*/
 
 int gc_pthread_join(pthread_t thread, void** retval){
     ll_removeNode(&pthread_ll_head, (long)thread);
     return pthread_join(thread, retval);
 }
 
-void gc_pthread_add_thread(long threadID, long stack_top, long stack_bottom){
-    ll_insertNode(&pthread_ll_head, threadID, 0, 0);
-}

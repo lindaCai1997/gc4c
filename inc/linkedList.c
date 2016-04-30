@@ -2,7 +2,23 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void ll_insertNode(llNode** head, long threadID, long stack_top, long stack_bottom){
+llNode* findNode(llNode* head, size_t threadID){
+
+   llNode* node = head;
+
+   while(node){
+        if(node->threadID == threadID)
+            return node;
+        node = node->next; 
+   }
+   
+   return NULL;
+
+}
+
+
+
+void ll_insertNode(llNode** head, size_t threadID, size_t stack_top, size_t stack_bottom){
     llNode* n = (llNode*)malloc(sizeof(llNode));
 
     n->threadID = threadID;
@@ -35,7 +51,7 @@ void ll_destroy(llNode** head){
 
 }
 
-void ll_removeNode(llNode** head, long threadID){
+void ll_removeNode(llNode** head, size_t threadID){
     llNode *temp = *head, *prev = NULL;
 
     while(temp){

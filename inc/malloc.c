@@ -56,9 +56,16 @@ void* clean_helper()
             current = current->next;
         }
     }
-    mark_on_stack(_metaData);
+
+    // mark_on_stack(_metaData);
+    llNode* node = pthread_ll_head;
+    while(node){
+        set_stack_top_bottom(node->stack_top, node->stack_bottom);
+        mark_on_stack();
+    }
 	mark_on_heap(_metaData);
     sweep(_metaData);
+
     pthread_mutex_lock(&_SIGNAL_MUTEX);
     _CLEAN_FLAG = 0;
     pthread_cond_broadcast(&_SIGNAL_CV);
@@ -99,7 +106,10 @@ void gc_init()
     again[strlen(num)] = '\0';
  	sscanf(again, "%zx", &i);
     set_stack_bottom(i);*/
-	find_stack_bottom();
+//	find_stack_bottom();
+    
+    insertStackTopBottom();
+
    // printf("hello: %zx:\n", i);
     _metaData = DataStructure_init();
 }
@@ -113,10 +123,33 @@ void gc_init_r(){
     gc_init();
 	//    *tid = pthread_self();
     // ll_insertNode(&pthread_ll_head, (long)pthread_self(), 0, 0);
-    gc_pthread_add_thread((long)pthread_self(),0, 0);
-    fprintf(stderr, "I am the main thread id: %d\n", *(int*)(pthread_self()));
+    // gc_pthread_add_thread((long)pthread_self(),0, 0);
+    // fprintf(stderr, "I am the main thread id: %d\n", *(int*)(pthread_self()));
     // Node_insert(_pthread_ds, (void*) tid, 0);
     signal(SIGUSR1, SIGNALHANDLER);
+}
+
+void insertStackTopBottom(){
+    pthread_attr_t Attributes;
+    void *StackAddress;
+    int StackSize;
+
+    // Get the pthread attributes
+    memset (&Attributes, 0, sizeof (Attributes));
+    pthread_getattr_np (pthread_self(), &Attributes);
+
+    // From the attributes, get the stack info
+    pthread_attr_getstack (&Attributes, &StackAddress, &StackSize);
+
+    // Done with the attributes
+    pthread_attr_destroy (&Attributes);
+
+//    printf ("Stack top:     %p\n", StackAddress);
+  //  printf ("Stack size:    %u bytes\n", StackSize);
+  //  printf ("Stack bottom:  %p\n", StackAddress + StackSize);
+  
+    ll_insertNode(&pthread_ll_head, pthread_self(), (size_t)StackAddress, (size_t)(StackAddress + StackAddress));
+
 }
 
 /*
@@ -132,6 +165,11 @@ void gc_destroy()
 
 void* gc_malloc(size_t size){
     pthread_mutex_lock(&_MALLOC_MUTEX);
+    
+    if(findNode(pthread_ll_head, pthread_self()) == NULL){
+        insertStackTopBottom();
+    }
+
     void* userData = malloc(size);
 	// printf("userData: %zx\n", userData);
     Node_insert(_metaData, userData, size);
