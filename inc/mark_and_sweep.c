@@ -145,7 +145,8 @@ void sweep(DataStructure *heapdata){
 	Node* temp = current;
 	while (current != NULL){
 		if (current -> mark == 0){
-	//		printf("remove at address: %zx\n", current -> address); 
+//			printf("sizeof dataStructure: %d\n", heapdata -> linkSize);
+//			printf("remove at address: %zx\n", current -> address); 
 			temp = current;
 			current = current -> next;
 			Node_remove(heapdata, temp -> address);

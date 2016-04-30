@@ -32,8 +32,8 @@ void testValidData(){
     int** x = malloc(size * sizeof(int*));
 
     for(int i = 0; i < size; i++){
-//		printf("address: %zx\n", &x[i]);
-        x[i] = malloc(sizeof(int));
+	   x[i] = malloc(sizeof(int));
+       printf("address: %zx\n", x[i]);
         *(x[i]) = i;
     }
 
@@ -53,8 +53,8 @@ void testValidData(){
 void testLargeData(){
     printf("--- Test Large Data ---\n");
 
-    size_t size = 1024 * 1024 * 1024, count = 5;
-
+    size_t size = 1024 * 1024, count = 5;
+	
     void* x = malloc(count * size);
     printf("Test Large Data Passed !!! \n");
 }
@@ -84,10 +84,14 @@ int main(){
     // printf("Test 1 with GC4C\n");
     gc_init();
     testSimple();
+//	testSimple();
     testValidData();
+	testValidData();
 //	testSimple();
     testLargeData();
+	testLargeData();
     testCharacter();
+	testCharacter();
     gc_destroy();
     return 0;
 }
