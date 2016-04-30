@@ -30,11 +30,11 @@ void testValidData(){
     int size = 100;
 
     int** x = malloc(size * sizeof(int*));
-
+//	printf("address_main: %zx\n", x);
+ 
     for(int i = 0; i < size; i++){
 	   x[i] = malloc(sizeof(int));
-       // printf("address: %zx\n", x[i]);
-        *(x[i]) = i;
+       *(x[i]) = i;
     }
 
 	for(int i = 0; i < size; i++){
@@ -62,13 +62,11 @@ void testLargeData(){
 void testCharacter(){
     const int size = 100;
     char** arr = malloc(sizeof(char*) * size);
-
+    
     for(int i = 0; i < 100; i++){
        	arr[i] = malloc(50);
-// 		printf("address: %zx\n", arr[i]);    
-    
+// 		printf("address: %zx\n", arr[i]);        
         *(arr[i]) = (char)i;
-
     }
 
     for(int i = 0; i < 100; i++){
@@ -83,7 +81,7 @@ void testCharacter(){
 int main(){
     // printf("Test 1 with GC4C\n");
     gc_init();
-    testSimple();
+//    testSimple();
 //	testSimple();
     testValidData();
 	testValidData();

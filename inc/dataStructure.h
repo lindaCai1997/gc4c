@@ -34,5 +34,6 @@ void Node_remove(DataStructure*, void*);
 void Node_remove_r(DataStructure*, void*);
 void* DataStructure_findNode(DataStructure*, void*);
 void DataStructure_display(DataStructure*);
+void DataStructure_plot(DataStructure*);
 
 #endif

@@ -1,7 +1,5 @@
 #include <stdio.h>
-#include "../inc/DataStructure.h"
-
-
+#include "DataStructure.h"
 
 void test_insert()
 {
@@ -14,8 +12,10 @@ void test_insert()
     {
         int_arr[i] = (int*) malloc(sizeof(int));
         Node_insert(ds, int_arr[i], sizeof(int));
+        
     }
     DataStructure_display(ds);
+
     DataStructure_destroy(ds);
     free(int_arr);
 }
@@ -31,12 +31,14 @@ void test_remove(){
     {
         int_arr[i] = (int*) malloc(sizeof(int));
         Node_insert(ds, int_arr[i], sizeof(int));
+        DataStructure_plot(ds);
     }
     DataStructure_display(ds);
     fprintf(stderr, "Remove even number of nodes\n");
     for(i = 0; i < 10; i = i + 2)
     {
-        Node_remove(ds, &int_arr[i]);
+        Node_remove(ds, int_arr[i]);
+        DataStructure_plot(ds);
     }
     DataStructure_display(ds);
     DataStructure_destroy(ds);
