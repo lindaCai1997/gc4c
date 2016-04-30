@@ -72,31 +72,35 @@ void* clean_helper()
 void gc_init()
 {
     puts("gc_inti");
-    size_t i;
+/*    size_t i;
     size_t k = 0;
     char num[100];
     char again[100];
-    for (k = 0; k < 100; k++){
+    
+	for (k = 0; k < 100; k++){
         num[k] = 0;
         again[k] = 0;
     }
 
-    register size_t j asm("r11");
-    
-    asm("movq %rbp, %r12\n\t"
-        "popq %rbp\n\t"
-        "movq %rbp, %r11\n\t"
-        "movq %r12, %rbp");
+    register size_t j asm("r12");
+//    register size_t num asm("r12"); 
+    asm("movq %rbp, %r12\n\t");
+ //       "popq %rbp\n\t"
+ //       "movq %rbp, %r11\n\t");
+//		"movq %r12, %rbp");
+//		"push %rbp");
         
     sprintf(num, "%zx", j);
-    
+
+	asm("push %rbp");
     for (k = 0; k < strlen(num); k++){
         again[k] = num[k];
     }
     again[strlen(num)] = '\0';
-    sscanf(again, "%zx", &i);
-    set_stack_bottom(i);
-    printf("%p\n", i);
+ 	sscanf(again, "%zx", &i);
+    set_stack_bottom(i);*/
+	find_stack_bottom();
+   // printf("hello: %zx:\n", i);
     _metaData = DataStructure_init();
 }
 
@@ -107,7 +111,7 @@ void gc_init()
 void gc_init_r(){
     _CLEAN_FLAG = 0;
     gc_init();
-//    *tid = pthread_self();
+	//    *tid = pthread_self();
     // ll_insertNode(&pthread_ll_head, (long)pthread_self(), 0, 0);
     gc_pthread_add_thread((long)pthread_self(),0, 0);
     fprintf(stderr, "I am the main thread id: %d\n", *(int*)(pthread_self()));

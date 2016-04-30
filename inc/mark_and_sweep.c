@@ -11,6 +11,7 @@ size_t  stack_top;
 
 void set_stack_bottom(size_t bottom){
     stack_bottom = bottom;
+	find_stack_bottom();
 }
 
 void find_stack_bottom(){
@@ -142,7 +143,7 @@ void sweep(DataStructure *heapdata){
 	Node* temp = current;
 	while (current != NULL){
 		if (current -> mark == 0){
-//			printf("remove at address: %zx\n",current -> address); 
+		//	printf("remove at address: %zx\n", current -> address); 
 			temp = current;
 			current = current -> next;
 			Node_remove(heapdata, temp -> address);
