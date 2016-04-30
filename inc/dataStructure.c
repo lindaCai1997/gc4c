@@ -3,6 +3,7 @@
  * implementation of the data structure
  */
 
+#include <string.h>
 #include "dataStructure.h"
 
 static pthread_mutex_t _ds_mtx = PTHREAD_MUTEX_INITIALIZER;
@@ -346,4 +347,78 @@ void DataStructure_display(DataStructure* ds)
     }
     fprintf(stderr, "\n");
     fprintf(stderr, "End of Print. \n");
+}
+
+void DataStructure_plot(DataStructure* ds)
+{
+    if(ds == NULL || ds->linkSize == 0)
+    {
+        fprintf(stderr, "The dataStructure is empty.\n");
+        return;
+    }
+    char** graph = (char**) malloc(sizeof(char*)*5);
+    size_t line_index;
+    size_t line_length = (ds->linkSize)*16 + 1;
+    //initiate all lines, with initiate length of 100
+    for(line_index = 0; line_index < 5; line_index++)
+    {
+        graph[line_index] = (char*) malloc(sizeof(char)*line_length);
+        graph[line_index][0] = '\0';
+    }
+    Node* current = ds->head;
+    
+    while(current != NULL)
+    {
+        for(line_index = 0; line_index < 5; line_index++)
+        {
+            if(line_index == 0)
+            {
+                strcat(graph[line_index], "**********      ");
+            }
+            else if(line_index == 1)
+            {
+                char strip[17];
+                sprintf(strip, "* mark ");
+                char marked[2];
+                marked[0] = current-> mark + '0';
+                marked[1] = '\0';
+                strcat(strip, marked);
+                strcat(strip, " *   *  ");
+                strip[16] = '\0';
+                strcat(graph[line_index], strip);
+            }
+            else if(line_index == 2)
+            {
+                strcat(graph[line_index], "*  size  * **** ");
+            }
+            else if(line_index == 3)
+            {
+                char strip[17];
+                sprintf(strip, "*%lu", current->size);
+                strip[strlen(strip)] = '\0';
+                while(strlen(strip) < 9)
+                {
+                    strcat(strip, " ");
+                }
+                strcat(strip, "*   *  ");
+                strip[16] = '\0';
+                strcat(graph[line_index], strip);
+            }
+            else//line_index = 4
+            {
+                strcat(graph[line_index], "**********      ");
+            }
+        }
+        current = current->next;
+    }
+
+    for(line_index = 0; line_index < 5; line_index++)
+    {
+        fprintf(stderr, "%s\n", graph[line_index]);
+    }
+    for(line_index = 0; line_index < 5; line_index++)
+    {
+        free(graph[line_index]);
+    }
+    free(graph);
 }
