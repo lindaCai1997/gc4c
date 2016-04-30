@@ -49,14 +49,16 @@ int mark_heap(size_t sp, DataStructure* heapdata){
     heap_bottom = (size_t)(heapdata -> tail -> address);
     
 	if (current == NULL)
-         return 0;
+        return 0;
     do{ 
 		if (sp ==  (size_t)(current -> address)){
+			if (current -> mark == 1)
+				return 1;
             current -> mark = 1; 
 			void* heap_address = current -> address;
 			size_t potential_address = 0;
 			while (heap_address < current -> address + current -> size){
-        		potential_address = *(size_t*)heap_address;
+        			potential_address = *(size_t*)heap_address;
         		if (potential_address >= heap_top && potential_address <= heap_bottom)
            			mark_heap(potential_address, heapdata);
         		heap_address += sizeof(size_t);
@@ -143,7 +145,7 @@ void sweep(DataStructure *heapdata){
 	Node* temp = current;
 	while (current != NULL){
 		if (current -> mark == 0){
-		//	printf("remove at address: %zx\n", current -> address); 
+	//		printf("remove at address: %zx\n", current -> address); 
 			temp = current;
 			current = current -> next;
 			Node_remove(heapdata, temp -> address);

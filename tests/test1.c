@@ -64,9 +64,9 @@ void testCharacter(){
     char** arr = malloc(sizeof(char*) * size);
 
     for(int i = 0; i < 100; i++){
-        
-        arr[i] = malloc(100);
-
+       	arr[i] = malloc(50);
+// 		printf("address: %zx\n", arr[i]);    
+    
         *(arr[i]) = (char)i;
 
     }
@@ -77,6 +77,7 @@ void testCharacter(){
             return;
         }
     }
+	printf("SUCCESS");
 }
 
 int main(){
