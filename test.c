@@ -1,6 +1,10 @@
+#include "inc/malloc.h"
+#include <stddef.h>
+#include <stdio.h>
+
 //test cases for gc 
 void test_gc_one_layer(){
-    gc_init();
+  //  gc_init();
     printf("--test gc--\n");
 
     int* int_arr[10];
@@ -22,11 +26,11 @@ void test_gc_one_layer(){
     int* new_int = malloc(sizeof(int));
     printf("address stack: %zx, address heap: %zx\n",
             (size_t)&new_int, (size_t)new_int);
-    gc_destroy();
+  //  gc_destroy();
 }
 
 void test_gc_two_layer(){
-    gc_init();
+//    gc_init();
     printf("--test gc2--\n");
 
     int** int_arr[5];
@@ -46,11 +50,13 @@ void test_gc_two_layer(){
     answer[5] = 0;
     int* good = malloc(sizeof(int));
     printf("address stack: %zx, address heap: %zx\n", (size_t)&good, (size_t)good);
-    gc_destroy();
+ //   gc_destroy();
 }
 
 int main(){
+    gc_init();
     test_gc_two_layer();
     test_gc_one_layer();
+    gc_destroy();
     return 0;
 }
