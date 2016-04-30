@@ -13,7 +13,7 @@ void mark_on_heap(DataStructure *heapdata);
 void mark_all_on_stack(DataStructure *heapdata);
 void set_stack_bottom(size_t bottom);
 void sweep(DataStructure *heapdata);
-void set_stack_top(size_t stack_top_input, size_t stack_bottom_input);
+void set_stack_top_and_bottom(size_t stack_top_input, size_t stack_bottom_input);
 	
 void mark_all_on_stack_r(DataStructure *heapdata);
 

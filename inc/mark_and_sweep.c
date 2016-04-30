@@ -70,7 +70,7 @@ int mark_heap(size_t sp, DataStructure* heapdata){
 
 }
 
-void set_stack_top(size_t stack_top_input, size_t stack_bottom_input){
+void set_stack_top_and_bottom(size_t stack_top_input, size_t stack_bottom_input){
 	stack_top = stack_top_input;
 	stack_bottom = stack_bottom_input;
 }
