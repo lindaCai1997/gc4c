@@ -80,8 +80,8 @@ void mark_on_stack(DataStructure *heapdata, size_t stack_top, size_t stack_botto
 
 //	mark_all_on_stack(heapdata);
 //	find_stack_bottom();
-    size_t i = 0;
-    stack_top = (size_t)(&i);
+     size_t i = 0;
+     stack_top = (size_t)(&i);
 	if (heapdata -> head == NULL)
 		return;
 //	printf("stack_top: %zx\n", stack_top);

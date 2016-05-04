@@ -75,7 +75,7 @@ void* clean_helper()
     }
 	mark_on_heap(_metaData);
     sweep(_metaData);
-	DataStructure_plot(_metaData);
+	// DataStructure_plot(_metaData);
     pthread_mutex_lock(&_SIGNAL_MUTEX);
     _CLEAN_FLAG = 0;
     pthread_cond_broadcast(&_SIGNAL_CV);
@@ -165,9 +165,12 @@ void insertStackTopBottom(){
 /*      int i = 0;
   	  size_t stack_top = (size_t)(&i);*/
 //	int i = 0;
-  	 size_t stack_top = (size_t)(StackAddress) + 320;
+  	 size_t stack_top = (size_t)(StackAddress) + sizeof(size_t);
 //           stack_bottom = (size_t)((void*)StackAddress + StackSize);
      size_t stack_bottom = (size_t)((void*)StackAddress + StackSize);
+
+     printf("stack_top: %lx, stack bottom: %lx", stack_top, stack_bottom);
+
   //  if(num == 1)
 //        exit(1);
     num++;
