@@ -61,16 +61,16 @@ void testLargeData(){
 }
 
 void testCharacter(){
-    const int size = 100;
+    const int size = 10;
     char** arr = malloc(sizeof(char*) * size);
     
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < size; i++){
        	arr[i] = malloc(50);
 // 		printf("address: %zx\n", arr[i]);        
         *(arr[i]) = (char)i;
     }
 
-    for(int i = 0; i < 100; i++){
+    for(int i = 0; i < size; i++){
         if(*(arr[i]) != (char)i){
             puts("test character FAILED");
             return;
@@ -88,24 +88,25 @@ void* starter(){
 int main(){
     // printf("Test 1 with GC4C\n");
     gc_init_r();
-//    testSimple();
-//	testSimple();
-    testValidData();
-	testValidData();
-//	testSimple();
-    testLargeData();
-	testLargeData();
-    testCharacter();
-    testCharacter();
+
+  testSimple();
+  //testSimple();
+//  testValidData();
+ // testValidData();
+ // testSimple();
+//  testLargeData();
+  //testLargeData();
+//  testCharacter();
+  //testCharacter();
 /*
     pthread_t pids[10];
 
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 1; i++)
         pthread_create(&pids[i], NULL, starter, NULL);
 
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < 1; i++)
         pthread_join(pids[i], NULL);
-*/
+
     gc_destroy();
-    return 0;
+  */  return 0;
 }

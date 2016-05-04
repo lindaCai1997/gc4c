@@ -6,9 +6,10 @@
 
 size_t  heap_top;
 size_t  heap_bottom;
-size_t  stack_bottom;
-size_t  stack_top;
+//size_t  stack_bottom;
+//size_t  stack_top;
 
+/*
 void find_stack_bottom(){
     // the 28th number in /proc/self/stat is the start of the stack
     FILE* statfp = fopen("/proc/self/stat", "r");
@@ -18,7 +19,7 @@ void find_stack_bottom(){
 			"%*lu %*lu %*ld %*ld %*ld %*ld %*ld %*ld %*llu %*lu %*ld %*lu %*lu %*lu" "%lu", &stack_bottom);
  	fclose(statfp);
 //	printf("stack bottom: %zx\n", stack_bottom);	
-}
+}*/
 
 
 int mark(size_t sp, DataStructure* heapdata){
@@ -28,13 +29,13 @@ int mark(size_t sp, DataStructure* heapdata){
          return 0;
     do{ 
 		if (sp ==  (size_t)(current -> address)){
-//            printf("found: %zx\n", (size_t)(current -> address));
+//			printf("found: %zx\n", (size_t)(current -> address));
 			current -> mark = 1; 
             return 1;
 		}	
 		current = current -> next;
     } while(current != NULL);
-    
+//	printf("not found\n");    
 	return 0;
 }
 
@@ -70,14 +71,14 @@ int mark_heap(size_t sp, DataStructure* heapdata){
 
 }
 
-void set_stack_top_and_bottom(size_t stack_top_input, size_t stack_bottom_input){
+/*void set_stack_top_and_bottom(size_t stack_top_input, size_t stack_bottom_input){
 	stack_top = stack_top_input;
 	stack_bottom = stack_bottom_input;
-}
+}*/
 
-void mark_on_stack(DataStructure *heapdata){
+void mark_on_stack(DataStructure *heapdata, size_t stack_top, size_t stack_bottom){
 
-	mark_all_on_stack(heapdata);
+//	mark_all_on_stack(heapdata);
 //	find_stack_bottom();
     size_t i = 0;
     stack_top = (size_t)(&i);
@@ -86,13 +87,17 @@ void mark_on_stack(DataStructure *heapdata){
 //	printf("stack_top: %zx\n", stack_top);
 	heap_top = (size_t)(heapdata -> head -> address);
     heap_bottom = (size_t)(heapdata -> tail -> address);
+
+    // puts("--------- new thread ----------");
    
   	size_t address_stack = stack_top;
     size_t address_heap = 0;
-    for (; address_stack < stack_bottom; address_stack += sizeof(size_t)){
-        if(address_stack == stack_top)
-            printf("thread id: %lu\n", pthread_self());
+    for (; address_stack < stack_bottom - sizeof(size_t); address_stack += sizeof(size_t)){
+    //    if(address_stack == stack_top)
+      //      printf("thread id: %lu, heap top: %lu, heap bottom: %lu\n", pthread_self(), heap_top, heap_bottom);
+        // printf("address stack: %zx, stack top: %zx, stack bottom: %zx\n", address_stack, stack_top, stack_bottom);
 		 address_heap = *((size_t*)address_stack);
+		// printf("haha\n");
 //		 printf("addess_stack : %zx address_heap:%zx\n", (size_t)address_stack, address_heap);
          if (address_heap >= heap_top && address_heap <= heap_bottom)
              mark(address_heap, heapdata);
@@ -126,7 +131,7 @@ void mark_on_heap(DataStructure *heapdata){
     		size_t potential_address = 0;
     		while (heap_address <= current -> address + current -> size){
         		potential_address = *(size_t*)heap_address;
-//				printf("addess_heap1 : %zx address_heap2:%zx\n", (size_t)heap_address, potential_address);
+			//	printf("addess_heap1 : %zx address_heap2:%zx\n", (size_t)heap_address, potential_address);
         		if (potential_address >= heap_top && potential_address <= heap_bottom)
            			mark_heap(potential_address, heapdata);
         		heap_address += sizeof(size_t);

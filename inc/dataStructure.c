@@ -195,7 +195,7 @@ void Node_remove(DataStructure* ds, void* address)
 
     //More than one node in the structure
     //Remove the head
-    if(ds->head->address == address)
+	else if(ds->head->address == address)
     {
         Node* temp = ds->head->next;
 		free(ds->head->address);
