@@ -8,7 +8,7 @@ debug: test1-debug
 asan: test1-asan
 
 test1: malloc tests/test1.c
-	$(CC) malloc.o dataStructure.o mark_and_sweep.o linkedList.o -lpthread tests/test1.c -o test1.out
+	$(CC) malloc.o linkedList.o dataStructure.o mark_and_sweep.o -lpthread tests/test1.c -o test1.out
 
 test1-debug: malloc-debug tests/test1.c
 	$(CC) $(DEBUGFLAGS) malloc.o dataStructure.o mark_and_sweep.o linkedList.o -lpthread tests/test1.c -o test1-debug.out

@@ -11,9 +11,7 @@
 #include <string.h>
 #include <signal.h>
 #include <pthread.h>
-// #include "gc_pthread.h"
 #include "malloc.h"
-// #include "dataStructure.h" 
 #include "mark_and_sweep.h"
 #include "linkedList.h"
 
@@ -23,6 +21,10 @@ static llNode* pthread_ll_head = NULL;
 static pthread_mutex_t _SIGNAL_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t _MALLOC_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t _SIGNAL_CV = PTHREAD_COND_INITIALIZER;
+static pthread_mutex_t mtx_1 = PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t ll_mtx = PTHREAD_MUTEX_INITIALIZER;
+
+void SIGNALHANDLER();
 
 #undef malloc
 #undef calloc
@@ -30,28 +32,57 @@ static pthread_cond_t _SIGNAL_CV = PTHREAD_COND_INITIALIZER;
 #undef free
 #undef pthread_join
 
+static long _numThreads;
+static pthread_cond_t _mainThreadCond = PTHREAD_COND_INITIALIZER;
+
 int gc_pthread_join(pthread_t thread, void** retval){
+    pthread_mutex_lock(&mtx_1);
+    long ret = pthread_join(thread, retval);
+    pthread_mutex_lock(&ll_mtx);
     ll_removeNode(&pthread_ll_head, (long)thread);
-    return pthread_join(thread, retval);
+    pthread_mutex_unlock(&ll_mtx);
+    pthread_mutex_unlock(&mtx_1);
+    return ret;
 }
+
+void updateStackTop(){
+
+    pthread_mutex_lock(&ll_mtx);
+    llNode* node = ll_findNode(pthread_ll_head, pthread_self());
+    pthread_mutex_unlock(&ll_mtx);
+
+    int i = 0;
+    
+    node->stack_top = (size_t)(&i);
+
+}
+
 
 void SIGNALHANDLER()
 {
-    // fprintf(stderr, "I am thread: %lu.  I will sleep for a while...\n", (long)pthread_self());
     pthread_mutex_lock(&_SIGNAL_MUTEX);
+
+    pthread_mutex_lock(&ll_mtx);
+    int i = 0;
+    ll_updateStackTop(pthread_ll_head, pthread_self(), (size_t)(&i));
+    pthread_mutex_unlock(&ll_mtx);
+
+    _numThreads--;
+
     while(_CLEAN_FLAG)
     {
         pthread_cond_wait(&_SIGNAL_CV, &_SIGNAL_MUTEX);
     }
     pthread_mutex_unlock(&_SIGNAL_MUTEX);
-    // fprintf(stderr, "I am thread: %d. I am awake!!!!\n", (int)pthread_self());
 }
 
 void* clean_helper()
 {
     pthread_mutex_lock(&_SIGNAL_MUTEX);
     _CLEAN_FLAG = 1;
+    _numThreads = 0;
     pthread_mutex_unlock(&_SIGNAL_MUTEX);
+    pthread_mutex_lock(&ll_mtx);
     llNode* current = pthread_ll_head;
     if(current != NULL)
     {
@@ -60,22 +91,32 @@ void* clean_helper()
         {
             pthread_t pid = (pthread_t)current->threadID;
             if(pid != calling_thread_pid) //put all other threads to sleep
+            {
+                pthread_mutex_lock(&_SIGNAL_MUTEX);
+                _numThreads++;
+                pthread_mutex_unlock(&_SIGNAL_MUTEX);
                 pthread_kill(pid, SIGUSR1); 
+            }
             current = current->next;
         }
     }
+    pthread_mutex_unlock(&ll_mtx);
 
-    // mark_on_stack(_metaData);
+    pthread_mutex_lock(&_SIGNAL_MUTEX);
+    while(_numThreads)
+        pthread_cond_wait(&_mainThreadCond, &_SIGNAL_MUTEX);
+    pthread_mutex_unlock(&_SIGNAL_MUTEX);
+
     llNode* node = pthread_ll_head;
     mark_all_on_stack(_metaData);
+    pthread_mutex_lock(&mtx_1);
     while(node){
-        // set_stack_top_and_bottom(node->stack_top, node->stack_bottom);
-        mark_on_stack(_metaData, node->stack_top, node->stack_bottom);
+        mark_on_stack(_metaData, node->stack_top, node->stack_bottom, node->threadID);
         node = node->next;
     }
+    pthread_mutex_unlock(&mtx_1);
 	mark_on_heap(_metaData);
     sweep(_metaData);
-	DataStructure_plot(_metaData);
     pthread_mutex_lock(&_SIGNAL_MUTEX);
     _CLEAN_FLAG = 0;
     pthread_cond_broadcast(&_SIGNAL_CV);
@@ -88,40 +129,7 @@ void* clean_helper()
  */
 void gc_init()
 {
-    puts("gc_inti");
-/*    size_t i;
-    size_t k = 0;
-    char num[100];
-    char again[100];
-    
-	for (k = 0; k < 100; k++){
-        num[k] = 0;
-        again[k] = 0;
-    }
-
-    register size_t j asm("r12");
-//    register size_t num asm("r12"); 
-    asm("movq %rbp, %r12\n\t");
- //       "popq %rbp\n\t"
- //       "movq %rbp, %r11\n\t");
-//		"movq %r12, %rbp");
-//		"push %rbp");
-        
-    sprintf(num, "%zx", j);
-
-	asm("push %rbp");
-    for (k = 0; k < strlen(num); k++){
-        again[k] = num[k];
-    }
-    again[strlen(num)] = '\0';
- 	sscanf(again, "%zx", &i);
-    set_stack_bottom(i);*/
-//	find_stack_bottom();
-    
     insertStackTopBottom();
-
-
-   // printf("hello: %zx:\n", i);
     _metaData = DataStructure_init();
 }
 
@@ -132,16 +140,8 @@ void gc_init()
 void gc_init_r(){
     _CLEAN_FLAG = 0;
     gc_init();
-	//    *tid = pthread_self();
-    // ll_insertNode(&pthread_ll_head, (long)pthread_self(), 0, 0);
-    // gc_pthread_add_thread((long)pthread_self(),0, 0);
-    // fprintf(stderr, "I am the main thread id: %d\n", *(int*)(pthread_self()));
-    // Node_insert(_pthread_ds, (void*) tid, 0);
-
-
     signal(SIGUSR1, SIGNALHANDLER);
 }
-int num = 0;
 
 
 void insertStackTopBottom(){
@@ -159,20 +159,11 @@ void insertStackTopBottom(){
     // Done with the attributes
     pthread_attr_destroy (&Attributes);
 
-//    printf ("Stack top:     %p\n", StackAddress);
-  //  printf ("Stack size:    %u bytes\n", StackSize);
-  //  printf ("Stack bottom:  %p\n", StackAddress + StackSize);
-/*      int i = 0;
-  	  size_t stack_top = (size_t)(&i);*/
-//	int i = 0;
-  	 size_t stack_top = (size_t)(StackAddress) + 320;
-//           stack_bottom = (size_t)((void*)StackAddress + StackSize);
-     size_t stack_bottom = (size_t)((void*)StackAddress + StackSize);
-  //  if(num == 1)
-//        exit(1);
-    num++;
-//    ll_insertNode(&pthread_ll_head, pthread_self(), (size_t)StackAddress, (size_t)(StackAddress + StackSize));
+    size_t stack_top = (size_t)(StackAddress) + sizeof(size_t);
+    size_t stack_bottom = (size_t)((void*)StackAddress + StackSize);
+    pthread_mutex_lock(&ll_mtx);
     ll_insertNode(&pthread_ll_head, pthread_self(), stack_top, stack_bottom);
+    pthread_mutex_unlock(&ll_mtx);
 
 }
 
@@ -185,7 +176,6 @@ void gc_destroy()
      sweep(_metaData);
      DataStructure_destroy(_metaData);
      ll_destroy(&pthread_ll_head);
-    //user calls this at the end of program
 }
 
 void* gc_malloc(size_t size){
@@ -201,8 +191,6 @@ void* gc_malloc(size_t size){
 	}
 	
     void* userData = malloc(size);
-	// printf("userData: %zx\n", userData);
-//    Node_insert(_metaData, userData, size);
 	clean_helper();
     Node_insert(_metaData, userData, size);	
     pthread_mutex_unlock(&_MALLOC_MUTEX);
