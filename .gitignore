@@ -3,3 +3,6 @@
 *.h.gch
 *.d
 *.exe
+*.out
+*.dSYM
+test1.out
