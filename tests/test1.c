@@ -90,14 +90,14 @@ int main(){
     gc_init_r();
 
   testSimple();
-  //testSimple();
-//  testValidData();
- // testValidData();
- // testSimple();
-//  testLargeData();
-  //testLargeData();
-//  testCharacter();
-  //testCharacter();
+  testSimple();
+  testValidData();
+  testValidData();
+  testSimple();
+  testLargeData();
+  testLargeData();
+  testCharacter();
+  testCharacter();
 /*
     pthread_t pids[10];
 
@@ -106,7 +106,7 @@ int main(){
 
     for(int i = 0; i < 1; i++)
         pthread_join(pids[i], NULL);
-
+*/
     gc_destroy();
-  */  return 0;
+    return 0;
 }
